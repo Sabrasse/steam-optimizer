@@ -1,0 +1,31 @@
+<!-- app/views/pages/_visuals_section.html.erb -->
+<div class="card bg-dark text-light border-secondary mb-4">
+  <div class="card-body">
+    <h3 class="card-title">
+      Visuals
+      <span class="badge <%= visual_report[:score] == 'A' ? 'bg-success' : 'bg-warning' %>">
+        Score: <%= visual_report[:score] %>
+      </span>
+    </h3>
+
+    <% if visual_report[:issues].any? %>
+      <div class="alert alert-warning">
+        <h5 class="alert-heading">Issues Found:</h5>
+        <ul class="mb-0">
+          <% visual_report[:issues].each do |issue| %>
+            <li><%= issue %></li>
+          <% end %>
+        </ul>
+        <hr class="border-secondary">
+        <p class="mb-0">
+          <i class="fas fa-lightbulb text-warning"></i>
+          <strong>Recommendations:</strong> Ensure you have at least <%= VisualAnalyzer::MIN_SCREENSHOTS %> high-quality screenshots and a compelling trailer video.
+        </p>
+      </div>
+    <% else %>
+      <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i> All set on visuals! You have plenty of screenshots and a trailer. Your store page media is well-prepared.
+      </div>
+    <% end %>
+  </div>
+</div> 

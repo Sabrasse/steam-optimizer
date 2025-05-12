@@ -1,0 +1,13 @@
+<!-- Results Section -->
+<div id="results" class="mt-5">
+  <h2 class="text-center mb-4">Analysis Results for "<%= @game_data['name'] %>"</h2>
+  
+  <!-- Description Analysis Section -->
+  <%= render "description_section", text_report: @text_report, ai_suggestions: @ai_suggestions %>
+  
+  <!-- Visuals Analysis Section -->
+  <%= render "visuals_section", visual_report: @visual_report %>
+  
+  <!-- Tags Analysis Section -->
+  <%= render "tags_section", tags_list: @tags_list, tags_score: @tags_score, tags_feedback: @tags_feedback %>
+</div> 

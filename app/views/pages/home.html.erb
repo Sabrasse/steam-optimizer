@@ -1,0 +1,36 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card bg-dark text-light border-secondary">
+        <div class="card-body">
+          <h1 class="text-center mb-4">SteamPage Optimizer</h1>
+          <p class="text-center text-muted">Enter your game's Steam App ID or full URL to analyze its store page:</p>
+
+          <%= form_with url: root_path, method: :post, data: { controller: "form", action: "submit->form#submit" } do |f| %>
+            <div class="mb-3">
+              <%= f.label :app_id, "Steam App ID or URL", class: "form-label" %>
+              <%= f.text_field :app_id, class: "form-control bg-dark text-light border-secondary", 
+                  placeholder: "e.g. 480 or https://store.steampowered.com/app/480/Portal_2" %>
+            </div>
+            <div class="text-center">
+              <%= f.submit "Analyze Page", class: "btn btn-primary", data: { formTarget: "submitButton" } %>
+              <span data-form-target="spinner" style="display:none; margin-left:10px;">
+                <i class="fas fa-spinner fa-spin"></i> Analyzing...
+              </span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div id="flash">
+        <%= render "shared/flashes" %>
+      </div>
+
+      <div id="results">
+        <% if @game_data %>
+          <%= render "results" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
