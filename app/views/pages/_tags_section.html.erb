@@ -8,29 +8,28 @@
       </span>
     </h3>
 
-    <div class="mb-3">
-      <h5 class="text-primary">Tags detected:</h5>
+    <div class="content-section">
+      <h5 class="text-primary">Current Tags</h5>
       <% if tags_list.any? %>
-        <div class="d-flex flex-wrap gap-2">
+        <div class="d-flex flex-wrap gap-2 mb-3">
           <% tags_list.each do |tag| %>
             <span class="badge bg-secondary"><%= tag %></span>
           <% end %>
         </div>
       <% else %>
-        <p class="text-muted">(None)</p>
+        <p class="text-muted mb-3">(None)</p>
+      <% end %>
+
+      <% if tags_score != "A" %>
+        <div class="text-warning">
+          <i class="fas fa-exclamation-circle"></i>
+          <small><%= tags_feedback %></small>
+        </div>
+        <div class="mt-3">
+          <i class="fas fa-lightbulb text-warning"></i>
+          <strong>Recommendation:</strong> Think about adding more relevant tags/genres if possible. This helps players discover your game.
+        </div>
       <% end %>
     </div>
-
-    <div class="alert <%= tags_score == 'A' ? 'alert-success' : 'alert-warning' %>">
-      <i class="fas <%= tags_score == 'A' ? 'fa-check-circle' : 'fa-exclamation-circle' %>"></i>
-      <%= tags_feedback %>
-    </div>
-
-    <% if tags_score != "A" %>
-      <div class="mt-3">
-        <i class="fas fa-lightbulb text-warning"></i>
-        <strong>Recommendation:</strong> Think about adding more relevant tags/genres if possible. This helps players discover your game.
-      </div>
-    <% end %>
   </div>
 </div> 

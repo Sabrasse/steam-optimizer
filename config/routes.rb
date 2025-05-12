@@ -15,4 +15,10 @@ Rails.application.routes.draw do
   
   # API endpoint for JSON data
   get "steam_data/:appid", to: "steam_data#show"
+
+  resources :games do
+    member do
+      get 'steam_images/analyze', to: 'steam_images#analyze'
+    end
+  end
 end

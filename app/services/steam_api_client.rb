@@ -36,6 +36,12 @@ class SteamApiClient
     return nil if info.nil? || info["success"] == false
 
     data = info["data"]
+    
+    # Extract the capsule image URL if available
+    if data["header_image"].present?
+      data["capsule_image_url"] = data["header_image"]
+    end
+
     # We expect keys like "name", "short_description", "about_the_game", "genres", "categories"
     data
   end

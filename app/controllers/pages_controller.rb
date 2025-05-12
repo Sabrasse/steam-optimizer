@@ -46,6 +46,13 @@ class PagesController < ApplicationController
       @tags_list = extract_tags(@game_data)
       @tags_score, @tags_feedback = TextAnalyzer.grade_tags(@tags_list)
       @ai_suggestions = generate_ai_suggestions(@game_data)
+      
+      # Analyze the capsule image if available
+      if @game_data["capsule_image_url"].present?
+        image_suggester = AiImageSuggester.new
+        @image_suggestions = image_suggester.suggest_capsule_image_improvements(@game_data["capsule_image_url"])
+        @image_validation = image_suggester.validate_capsule_image(@game_data["capsule_image_url"])
+      end
 
       respond_to do |format|
         format.html { render :home }
@@ -67,6 +74,8 @@ class PagesController < ApplicationController
           @tags_list = results[:tags_list]
           @tags_score, @tags_feedback = TextAnalyzer.grade_tags(@tags_list)
           @ai_suggestions = results[:ai_suggestions]
+          @image_suggestions = results[:image_suggestions]
+          @image_validation = results[:image_validation]
           
           # Clear the session token
           session.delete(:analysis_token)
