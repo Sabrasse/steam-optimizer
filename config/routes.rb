@@ -9,4 +9,10 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # Root path showing the form and (after submission) results
+  post "/", to: "pages#home"
+  
+  # API endpoint for JSON data
+  get "steam_data/:appid", to: "steam_data#show"
 end

@@ -10,3 +10,66 @@
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+
+// Custom dark theme styles
+body {
+  background-color: #1b2838;
+  color: #c6d4df;
+}
+
+.bg-darker {
+  background-color: #171a21;
+}
+
+.card {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.form-control {
+  &:focus {
+    background-color: #171a21;
+    border-color: #66c0f4;
+    color: #c6d4df;
+    box-shadow: 0 0 0 0.25rem rgba(102, 192, 244, 0.25);
+  }
+}
+
+.btn-primary {
+  background-color: #66c0f4;
+  border-color: #66c0f4;
+  color: #1b2838;
+
+  &:hover {
+    background-color: #1999ff;
+    border-color: #1999ff;
+  }
+}
+
+.text-primary {
+  color: #66c0f4 !important;
+}
+
+.badge {
+  &.bg-success {
+    background-color: #66c0f4 !important;
+  }
+  &.bg-warning {
+    background-color: #f5d76e !important;
+  }
+  &.bg-secondary {
+    background-color: #2a475e !important;
+  }
+}
+
+.alert {
+  &.alert-success {
+    background-color: rgba(102, 192, 244, 0.1);
+    border-color: #66c0f4;
+    color: #66c0f4;
+  }
+  &.alert-warning {
+    background-color: rgba(245, 215, 110, 0.1);
+    border-color: #f5d76e;
+    color: #f5d76e;
+  }
+}
