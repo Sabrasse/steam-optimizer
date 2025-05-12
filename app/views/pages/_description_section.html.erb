@@ -8,20 +8,39 @@
       </span>
     </h3>
 
-    <% if text_report[:issues].any? %>
-      <div class="alert alert-warning">
-        <h5 class="alert-heading">Issues Found:</h5>
-        <ul class="mb-0">
-          <% text_report[:issues].each do |issue| %>
-            <li><%= issue %></li>
-          <% end %>
-        </ul>
+    <div class="content-section">
+      <h5 class="text-primary">Current Content</h5>
+      
+      <div class="mb-4">
+        <h6>Short Description:</h6>
+        <p class="mb-2"><%= @game_data['short_description'] || '(No short description provided)' %></p>
+        <% if text_report[:issues].any? { |i| i.include?('short description') } %>
+          <div class="text-warning">
+            <i class="fas fa-exclamation-circle"></i>
+            <small>
+              <% text_report[:issues].select { |i| i.include?('short description') }.each do |issue| %>
+                <%= issue %><br>
+              <% end %>
+            </small>
+          </div>
+        <% end %>
       </div>
-    <% else %>
-      <div class="alert alert-success">
-        <i class="fas fa-check-circle"></i> No major issues with the textual content. Great job on the descriptions!
+
+      <div class="mb-4">
+        <h6>About the Game:</h6>
+        <p class="mb-2"><%= @game_data['about_the_game'] || '(No description provided)' %></p>
+        <% if text_report[:issues].any? { |i| i.include?('paragraph') || i.include?('feature list') } %>
+          <div class="text-warning">
+            <i class="fas fa-exclamation-circle"></i>
+            <small>
+              <% text_report[:issues].select { |i| i.include?('paragraph') || i.include?('feature list') }.each do |issue| %>
+                <%= issue %><br>
+              <% end %>
+            </small>
+          </div>
+        <% end %>
       </div>
-    <% end %>
+    </div>
 
     <%# AI suggestions for improving text %>
     <div class="mt-4">
