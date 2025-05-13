@@ -37,15 +37,70 @@
         </div>
 
         <% if @analysis.processing? %>
-          <%= render "analysis_progress" %>
+          <%= render "shared/analysis_progress" %>
         <% end %>
 
-        <%= render "results", analysis: @analysis %>
+        <%= render "shared/results", analysis: @analysis %>
 
         <% if @game.analyses.count > 1 %>
-          <%= render "analysis_history" %>
+          <%= render "shared/analysis_history" %>
         <% end %>
       </div>
     </div>
   </div>
 </div>
+
+<% content_for :head do %>
+  <title><%= @game.name %> - Steam Page Analysis</title>
+  <meta name="description" content="Analysis of <%= @game.name %>'s Steam store page">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= show_analysis_url(@game.slug) %>">
+  <meta property="og:title" content="<%= @game.name %> - Steam Page Analysis">
+  <meta property="og:description" content="Analysis of <%= @game.name %>'s Steam store page">
+  <meta property="og:image" content="<%= @game.capsule_image_url %>">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="<%= show_analysis_url(@game.slug) %>">
+  <meta property="twitter:title" content="<%= @game.name %> - Steam Page Analysis">
+  <meta property="twitter:description" content="Analysis of <%= @game.name %>'s Steam store page">
+  <meta property="twitter:image" content="<%= @game.capsule_image_url %>">
+<% end %>
+
+<% content_for :scripts do %>
+  <script>
+    function copyShareLink() {
+      const url = '<%= show_analysis_url(@game.slug) %>';
+      navigator.clipboard.writeText(url).then(() => {
+        const tooltip = bootstrap.Tooltip.getInstance(document.querySelector('[data-bs-toggle="tooltip"]'));
+        const originalTitle = tooltip._config.title;
+        tooltip.setContent({ '.tooltip-inner': 'Link copied!' });
+        setTimeout(() => {
+          tooltip.setContent({ '.tooltip-inner': originalTitle });
+        }, 2000);
+      });
+    }
+
+    // Initialize tooltips
+    document.addEventListener('turbo:load', () => {
+      const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltips.forEach(tooltip => new bootstrap.Tooltip(tooltip));
+    });
+
+    <% if @analysis.processing? %>
+      // Poll for updates every 2 seconds
+      const pollInterval = setInterval(() => {
+        fetch('<%= show_analysis_path(@game.slug) %>.json')
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'completed') {
+              clearInterval(pollInterval);
+              window.location.reload();
+            }
+          });
+      }, 2000);
+    <% end %>
+  </script>
+<% end %>
