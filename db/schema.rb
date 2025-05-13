@@ -10,9 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_10_124830) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_13_112728) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "analyses", force: :cascade do |t|
+    t.bigint "game_id", null: false
+    t.jsonb "text_report", default: {}
+    t.jsonb "visual_report", default: {}
+    t.jsonb "tags_list", default: {}
+    t.jsonb "ai_suggestions", default: {}
+    t.text "image_suggestions"
+    t.text "image_validation"
+    t.string "status", default: "pending", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id", "created_at"], name: "index_analyses_on_game_id_and_created_at"
+    t.index ["game_id"], name: "index_analyses_on_game_id"
+  end
+
+  create_table "games", force: :cascade do |t|
+    t.string "steam_app_id", null: false
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.text "short_description"
+    t.text "about_the_game"
+    t.string "capsule_image_url"
+    t.jsonb "genres", default: {}
+    t.jsonb "categories", default: {}
+    t.jsonb "screenshots", default: {}
+    t.jsonb "movies", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_games_on_slug", unique: true
+    t.index ["steam_app_id"], name: "index_games_on_steam_app_id", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -26,4 +58,5 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_10_124830) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "analyses", "games"
 end

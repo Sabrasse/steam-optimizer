@@ -12,14 +12,16 @@ class AiImageSuggester
     return nil if image_url.nil? || image_url.strip.empty?
 
     prompt = <<~PROMPT
-      Analyze this Steam game capsule image and provide specific suggestions for improvement. Consider:
-      1. Visual impact and composition
-      2. Branding and game identity
-      3. Text readability (if any)
-      4. Steam store page best practices
-      5. Technical aspects (resolution, quality)
+      You are a professional Steam store page designer. Analyze this game's capsule image and provide concise, actionable suggestions.
 
-      Provide 3-5 specific, actionable suggestions for improvement.
+      Provide exactly 3 bullet points, each containing:
+      - One specific improvement needed
+      - One quick tip on how to implement it
+      - One successful Steam game that does this well
+
+      Keep each bullet point to 2-3 lines maximum.
+      Do not use markdown formatting or special characters.
+      Focus on the most impactful changes only.
     PROMPT
 
     begin
@@ -41,7 +43,7 @@ class AiImageSuggester
               ]
             }
           ],
-          max_tokens: 500
+          max_tokens: 300
         }
       )
       Rails.logger.debug "Raw API Response for image analysis: #{response.inspect}"
@@ -62,15 +64,16 @@ class AiImageSuggester
     return nil if image_url.nil? || image_url.strip.empty?
 
     prompt = <<~PROMPT
-      Check if this Steam capsule image meets the following requirements:
-      1. Resolution: 460x215 pixels (recommended)
-      2. Format: JPG or PNG
-      3. File size: Under 1MB
-      4. No explicit content
-      5. Clear and readable text (if any)
-      6. Proper branding and game identity
+      You are a Steam store page quality assurance specialist. Validate this game's capsule image.
 
-      Provide a validation report with any issues found.
+      Provide exactly 3 bullet points:
+      1. Technical check (resolution, format, size)
+      2. Visual check (quality, composition, readability)
+      3. Required actions (if any)
+
+      Keep each bullet point to 2-3 lines maximum.
+      Do not use markdown formatting or special characters.
+      Focus on critical issues only.
     PROMPT
 
     begin
@@ -92,7 +95,7 @@ class AiImageSuggester
               ]
             }
           ],
-          max_tokens: 300
+          max_tokens: 200
         }
       )
       Rails.logger.debug "Raw API Response for image validation: #{response.inspect}"
