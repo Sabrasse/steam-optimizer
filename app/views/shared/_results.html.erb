@@ -1,0 +1,101 @@
+<!-- Results Section -->
+<div id="results" class="mt-5">
+  <h2 class="text-center mb-4">Analysis Results for "<%= @game.name %>"</h2>
+  
+  <div class="analysis-results">
+    <%# Text Analysis Section %>
+    <div class="card bg-dark text-light border-secondary mb-4">
+      <div class="card-body">
+        <h3 class="card-title">
+          Text Analysis
+          <span class="badge <%= @analysis.parsed_text_report['score'] == 'A' ? 'bg-success' : 'bg-warning' %>">
+            Score: <%= @analysis.parsed_text_report['score'] %>
+          </span>
+        </h3>
+
+        <div class="content-section">
+          <%# Short Description Section %>
+          <div class="mb-4">
+            <h5 class="text-primary">Short Description</h5>
+            <div class="mb-3">
+              <% if @game.short_description.present? %>
+                <%= sanitize @game.short_description %>
+              <% else %>
+                <span class="text-muted">No short description provided</span>
+              <% end %>
+            </div>
+
+            <%# AI suggestions for short description %>
+            <% if @analysis.parsed_ai_suggestions.present? && @analysis.parsed_ai_suggestions['short_description'].present? %>
+              <div class="card bg-darker text-light border-secondary">
+                <div class="card-body">
+                  <h6 class="text-primary mb-2">AI Suggestion:</h6>
+                  <p class="mb-0"><%= @analysis.parsed_ai_suggestions['short_description'] %></p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <%# About Section %>
+          <div class="mb-4">
+            <h5 class="text-primary">About Section</h5>
+            <div class="mb-3">
+              <% if @game.about_the_game.present? %>
+                <%= sanitize @game.about_the_game %>
+              <% else %>
+                <span class="text-muted">No about section provided</span>
+              <% end %>
+            </div>
+
+            <%# AI suggestions for about section %>
+            <% if @analysis.parsed_ai_suggestions.present? && @analysis.parsed_ai_suggestions['first_paragraph'].present? %>
+              <div class="card bg-darker text-light border-secondary">
+                <div class="card-body">
+                  <h6 class="text-primary mb-2">AI Suggestion for Introduction:</h6>
+                  <p class="mb-0"><%= @analysis.parsed_ai_suggestions['first_paragraph'] %></p>
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <%# Feature List Section %>
+          <div>
+            <h5 class="text-primary">Key Features</h5>
+            <% if @analysis.parsed_ai_suggestions.present? && @analysis.parsed_ai_suggestions['feature_list'].present? && @analysis.parsed_ai_suggestions['feature_list'].any? %>
+              <div class="card bg-darker text-light border-secondary">
+                <div class="card-body">
+                  <h6 class="text-primary mb-2">AI Suggested Features:</h6>
+                  <ul class="mb-0">
+                    <% @analysis.parsed_ai_suggestions['feature_list'].each do |feature| %>
+                      <li><%= feature %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            <% else %>
+              <p class="text-muted">No feature list available</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Visual Analysis Section %>
+    <%= render 'shared/visuals_section', visual_report: @analysis.parsed_visual_report %>
+
+    <%# Tags Analysis Section %>
+    <%= render 'shared/tags_section', tags_list: @analysis.parsed_tags_list %>
+
+    <%# Capsule Image Analysis Section %>
+    <%= render 'shared/capsule_section' %>
+  </div>
+</div>
+
+<% content_for :styles do %>
+<style>
+.markdown-content {
+  white-space: pre-wrap;
+  font-family: inherit;
+}
+</style>
+<% end %> 

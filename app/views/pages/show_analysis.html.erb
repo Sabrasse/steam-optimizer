@@ -1,0 +1,106 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-light mb-0"><%= @game.name %></h1>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestModal">
+      <i class="fas fa-redo"></i> Run New Analysis
+    </button>
+  </div>
+
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="mb-0"><%= @game.name %> Analysis</h1>
+          
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-light" data-bs-toggle="tooltip" title="Copy Link" onclick="copyShareLink()">
+              <i class="fas fa-link"></i>
+            </button>
+            
+            <a href="https://twitter.com/intent/tweet?text=<%= URI.encode_www_form_component("Check out this Steam page analysis for #{@game.name}") %>&url=<%= URI.encode_www_form_component(show_analysis_url(@game.slug)) %>" 
+               class="btn btn-outline-light" 
+               target="_blank"
+               data-bs-toggle="tooltip" 
+               title="Share on Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="card bg-dark text-light border-secondary mb-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <h5 class="card-title mb-0">Analysis Details</h5>
+              <span class="text-muted">Analyzed on <%= @analysis.created_at.strftime("%B %d, %Y") %></span>
+            </div>
+          </div>
+        </div>
+
+        <% if @analysis.processing? %>
+          <%= render "shared/analysis_progress" %>
+        <% end %>
+
+        <%= render "shared/results", analysis: @analysis %>
+
+        <% if @game.analyses.count > 1 %>
+          <%= render "shared/analysis_history" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :head do %>
+  <title><%= @game.name %> - Steam Page Analysis</title>
+  <meta name="description" content="Analysis of <%= @game.name %>'s Steam store page">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= show_analysis_url(@game.slug) %>">
+  <meta property="og:title" content="<%= @game.name %> - Steam Page Analysis">
+  <meta property="og:description" content="Analysis of <%= @game.name %>'s Steam store page">
+  <meta property="og:image" content="<%= @game.capsule_image_url %>">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="<%= show_analysis_url(@game.slug) %>">
+  <meta property="twitter:title" content="<%= @game.name %> - Steam Page Analysis">
+  <meta property="twitter:description" content="Analysis of <%= @game.name %>'s Steam store page">
+  <meta property="twitter:image" content="<%= @game.capsule_image_url %>">
+<% end %>
+
+<% content_for :scripts do %>
+  <script>
+    function copyShareLink() {
+      const url = '<%= show_analysis_url(@game.slug) %>';
+      navigator.clipboard.writeText(url).then(() => {
+        const tooltip = bootstrap.Tooltip.getInstance(document.querySelector('[data-bs-toggle="tooltip"]'));
+        const originalTitle = tooltip._config.title;
+        tooltip.setContent({ '.tooltip-inner': 'Link copied!' });
+        setTimeout(() => {
+          tooltip.setContent({ '.tooltip-inner': originalTitle });
+        }, 2000);
+      });
+    }
+
+    // Initialize tooltips
+    document.addEventListener('turbo:load', () => {
+      const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      tooltips.forEach(tooltip => new bootstrap.Tooltip(tooltip));
+    });
+
+    <% if @analysis.processing? %>
+      // Poll for updates every 2 seconds
+      const pollInterval = setInterval(() => {
+        fetch('<%= show_analysis_path(@game.slug) %>.json')
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'completed') {
+              clearInterval(pollInterval);
+              window.location.reload();
+            }
+          });
+      }, 2000);
+    <% end %>
+  </script>
+<% end %>
