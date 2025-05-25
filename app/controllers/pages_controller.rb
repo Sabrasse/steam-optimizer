@@ -2,6 +2,13 @@ class PagesController < ApplicationController
   skip_before_action :authenticate_user!, only: [:home, :show_analysis]
 
   def home
+    # Fetch the latest 3 completed analyses for the homepage display
+    @latest_analyses = Analysis.joins(:game)
+                              .where(status: 'completed')
+                              .order(created_at: :desc)
+                              .limit(3)
+                              .includes(:game)
+    
     if request.post?
       Rails.logger.debug "Form submitted with params: #{params.inspect}"
       
@@ -10,7 +17,7 @@ class PagesController < ApplicationController
       Rails.logger.debug "Input received: #{input}"
       
       if input.blank?
-        redirect_to root_path, alert: "Please enter a Steam App ID or URL."
+        @error_message = "Please enter a Steam App ID or URL."
         return
       end
 
@@ -27,14 +34,14 @@ class PagesController < ApplicationController
         Rails.logger.debug "Game data fetched: #{game_data.present?}"
 
         if game_data.nil?
-          redirect_to root_path, alert: "Could not retrieve data for App ID #{app_id}. Please check the ID and try again."
+          @error_message = "Could not retrieve data for App ID #{app_id}. Please check the ID and try again."
           return
         end
 
         # Set game attributes
         @game.name = game_data['name']
         @game.short_description = game_data['short_description']
-        @game.about_the_game = game_data['about_the_game']
+        @game.about_the_game = strip_images_from_content(game_data['about_the_game'])
         @game.capsule_image_url = game_data['capsule_image_url']
         @game.genres = game_data['genres']
         @game.categories = game_data['categories']
@@ -43,7 +50,7 @@ class PagesController < ApplicationController
         
         # Save the game
         unless @game.save
-          redirect_to root_path, alert: "Error saving game data."
+          @error_message = "Error saving game data."
           return
         end
       end
@@ -86,7 +93,7 @@ class PagesController < ApplicationController
       rescue StandardError => e
         Rails.logger.error "Analysis failed: #{e.message}"
         @analysis.mark_as_failed!
-        redirect_to root_path, alert: "Analysis failed. Please try again."
+        @error_message = "Analysis failed. Please try again."
       end
     end
   end
@@ -124,5 +131,14 @@ class PagesController < ApplicationController
       first_paragraph: ai.improve_first_paragraph(game.about_the_game),
       feature_list: ai.suggest_feature_list(game.about_the_game)
     }
+  end
+
+  def strip_images_from_content(content)
+    return content unless content.present?
+    
+    # Use Nokogiri to parse and remove img tags
+    doc = Nokogiri::HTML::DocumentFragment.parse(content)
+    doc.css('img').remove
+    doc.to_html
   end
 end

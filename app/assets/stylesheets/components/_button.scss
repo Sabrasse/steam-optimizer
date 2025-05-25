@@ -1,0 +1,25 @@
+.btn {
+  @extend .btn;  // Inherit Bootstrap button styles
+  @extend .btn-primary; // Default to Bootstrap's primary color
+
+  border-radius: 30px;
+  font-weight: bold;
+  padding: 12px 20px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  color: $dark;
+  max-width: 200px; /* Caps the width */
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: $dark;
+    transform: translateY(-2px);
+  }
+}
+
+.btn-primary {
+    background-color: $tertiary;
+  
+    &:hover {
+      background-color: darken($tertiary, 10%);
+    }
+  }

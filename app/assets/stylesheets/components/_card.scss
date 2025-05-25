@@ -1,0 +1,13 @@
+.card {
+  background-color: $secondary;
+}
+
+.hover-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-5px);
+    background-color: lighten($secondary, 15%);
+  }
+}

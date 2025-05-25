@@ -1,1 +1,20 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+
+User-agent: *
+Allow: /
+
+# Disallow admin and user-specific pages
+Disallow: /admin/
+Disallow: /users/
+Disallow: /rails/
+
+# Allow specific important pages
+Allow: /
+Allow: /*.css
+Allow: /*.js
+
+# Sitemap location
+Sitemap: https://steampageoptimizer.com/sitemap.xml
+
+# Crawl delay (optional - be nice to servers)
+Crawl-delay: 1
