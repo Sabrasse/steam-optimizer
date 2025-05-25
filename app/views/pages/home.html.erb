@@ -1,38 +1,158 @@
+<% content_for :head do %>
+  <title>Steam Page Optimizer - Analyze & Improve Your Steam Store Page Performance</title>
+  <meta name="description" content="Free Steam store page analyzer tool. Get AI-powered insights and optimization suggestions for your game's Steam page. Improve visibility, conversions, and sales.">
+  <meta name="keywords" content="Steam, game marketing, store page optimization, Steam analytics, game development, indie games, Steam visibility, game promotion">
+  <meta name="author" content="Steam Page Optimizer">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="<%= root_url %>">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="<%= root_url %>">
+  <meta property="og:title" content="Steam Page Optimizer - Analyze & Improve Your Steam Store Page">
+  <meta property="og:description" content="Free Steam store page analyzer tool. Get AI-powered insights and optimization suggestions for your game's Steam page.">
+  <meta property="og:image" content="<%= root_url %>og-image.jpg">
+  <meta property="og:site_name" content="Steam Page Optimizer">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="<%= root_url %>">
+  <meta name="twitter:title" content="Steam Page Optimizer - Analyze & Improve Your Steam Store Page">
+  <meta name="twitter:description" content="Free Steam store page analyzer tool. Get AI-powered insights and optimization suggestions for your game's Steam page.">
+  <meta name="twitter:image" content="<%= root_url %>og-image.jpg">
+  
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Steam Page Optimizer",
+    "description": "Free Steam store page analyzer tool that provides AI-powered insights and optimization suggestions for game developers",
+    "url": "<%= root_url %>",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Steam store page analysis",
+      "AI-powered content suggestions",
+      "Visual optimization recommendations",
+      "Tag analysis and improvement",
+      "Performance scoring"
+    ],
+    "creator": {
+      "@type": "Organization",
+      "name": "Steam Page Optimizer"
+    }
+  }
+  </script>
+  
+  <% if @latest_analyses&.any? %>
+  <!-- Schema.org for Latest Games -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Latest Games Analyzed",
+    "description": "Recently analyzed Steam games with optimization insights",
+    "itemListElement": [
+      <% @latest_analyses.each_with_index do |analysis, index| %>
+      {
+        "@type": "VideoGame",
+        "position": <%= index + 1 %>,
+        "name": "<%= analysis.game.name %>",
+        "description": "<%= analysis.game.short_description&.truncate(160) || 'Steam game analysis available' %>",
+        <% if analysis.game.capsule_image_url.present? %>
+        "image": "<%= analysis.game.capsule_image_url %>",
+        <% end %>
+        "url": "<%= show_analysis_url(analysis.game.slug) %>",
+        "gamePlatform": "Steam",
+        "applicationCategory": "Game"
+      }<%= ',' unless index == @latest_analyses.length - 1 %>
+      <% end %>
+    ]
+  }
+  </script>
+  <% end %>
+<% end %>
+
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <div class="card bg-dark text-light border-secondary">
-        <div class="card-body">
-          <h1 class="text-center mb-4">SteamPage Optimizer</h1>
-          <p class="text-center text-muted">Enter your game's Steam App ID or full URL to analyze its store page:</p>
-
+      <header class="banner">
+        <h1 class="text-center mb-4">Steam Page Optimizer</h1>
+        <p class="text-center lead">Enter your game's Steam App ID or full URL to analyze its store page</p>
+        <section class="form py-5" aria-label="Steam Game Analysis Form">
           <%= form_with url: root_path, method: :post, data: { turbo: false, controller: "form", action: "submit->form#submit" } do |f| %>
             <div class="mb-3">
               <%= f.label :app_id, "Steam App ID or URL", class: "form-label" %>
-              <%= f.text_field :app_id, class: "form-control bg-dark text-light border-secondary", 
-                  placeholder: "e.g. 480 or https://store.steampowered.com/app/480/Portal_2" %>
+              <%= f.text_field :app_id, class: "form-control #{'is-invalid' if @error_message}", 
+                  placeholder: "e.g. 480 or https://store.steampowered.com/app/480/Portal_2",
+                  data: { form_target: "input", action: "input->form#inputChanged" } %>
+              <div class="invalid-feedback" data-form-target="errorMessage" style="<%= @error_message ? 'display: block;' : 'display: none;' %>">
+                <%= @error_message if @error_message %>
+              </div>
             </div>
             <div class="text-center">
-              <%= f.submit "Analyze Page", class: "btn btn-primary", data: { formTarget: "submitButton" } %>
+              <%= f.submit "Analyze Page", class: "btn btn-primary", data: { form_target: "submitButton" } %>
               <span data-form-target="spinner" style="display:none; margin-left:10px;">
                 <i class="fas fa-spinner fa-spin"></i> Analyzing...
               </span>
             </div>
           <% end %>
-        </div>
-      </div>
+        </section>
+      </header>
 
-      <div id="flash">
-        <%= render "shared/flashes" %>
-      </div>
+      <!-- Latest Games Optimized Section -->
+      <% if @latest_analyses&.any? %>
+        <section class="mt-5" aria-labelledby="latest-games-heading">
+          <h2 id="latest-games-heading" class="text-center mb-4 text-light">Latest Games Optimized</h2>
+          <div class="row">
+            <% @latest_analyses.each do |analysis| %>
+              <article class="col-md-4 mb-3">
+                <%= link_to show_analysis_path(game_slug: analysis.game.slug), class: "text-decoration-none", 
+                    'aria-label': "View analysis for #{analysis.game.name}" do %>
+                  <div class="card h-100 hover-card">
+                    <% if analysis.game.capsule_image_url.present? %>
+                      <img src="<%= analysis.game.capsule_image_url %>" 
+                           class="card-img-top" 
+                           alt="<%= analysis.game.name %> game cover image"
+                           style="height: 200px; object-fit: cover;"
+                           loading="lazy">
+                    <% else %>
+                      <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                           style="height: 200px;"
+                           role="img" 
+                           aria-label="No image available for <%= analysis.game.name %>">
+                        <i class="fas fa-gamepad fa-3x text-muted" aria-hidden="true"></i>
+                      </div>
+                    <% end %>
+                    <div class="card-body d-flex flex-column">
+                      <h3 class="card-title text-truncate h6"><%= analysis.game.name %></h3>
+                      <small class="text-muted mt-auto">
+                        <time datetime="<%= analysis.created_at.iso8601 %>">
+                          Analyzed <%= time_ago_in_words(analysis.created_at) %> ago
+                        </time>
+                      </small>
+                    </div>
+                  </div>
+                <% end %>
+              </article>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
 
-      <div id="results">
-        <% if @game_data %>
-          <%= render "results" %>
+      <div id="flash" role="alert">
+        <% unless @error_message %>
+          <%= render "shared/flashes" %>
         <% end %>
       </div>
-
-      <%= turbo_frame_tag "turbo-frame" %>
     </div>
   </div>
 </div>

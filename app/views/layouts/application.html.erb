@@ -1,8 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Steam Page Optimizer</title>
+    <meta charset="utf-8">
+    <title><%= content_for?(:title) ? yield(:title) : "Steam Page Optimizer" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.steampowered.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -12,14 +26,14 @@
     <%= yield :head %>
   </head>
 
-  <body class="bg-black text-light">
+  <body class="text-light d-flex flex-column min-vh-100">
     <%= render "shared/navbar" %>
     
-    <main>
+    <main class="flex-grow-1" role="main">
       <%= yield %>
     </main>
 
-    <%= render "shared/footer" %>
+    <%# <%= render "shared/footer" %>
     
     <%= yield :scripts %>
   </body>

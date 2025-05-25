@@ -1,93 +1,181 @@
 <!-- Results Section -->
 <div id="results" class="mt-5">
-  <h2 class="text-center mb-4">Analysis Results for "<%= @game.name %>"</h2>
   
   <div class="analysis-results">
-    <%# Text Analysis Section %>
-    <div class="card bg-dark text-light border-secondary mb-4">
-      <div class="card-body">
-        <h3 class="card-title">
-          Text Analysis
-          <span class="badge <%= @analysis.parsed_text_report['score'] == 'A' ? 'bg-success' : 'bg-warning' %>">
-            Score: <%= @analysis.parsed_text_report['score'] %>
-          </span>
-        </h3>
-
-        <div class="content-section">
-          <%# Short Description Section %>
-          <div class="mb-4">
-            <h5 class="text-primary">Short Description</h5>
-            <div class="mb-3">
-              <% if @game.short_description.present? %>
-                <%= sanitize @game.short_description %>
-              <% else %>
-                <span class="text-muted">No short description provided</span>
-              <% end %>
-            </div>
-
-            <%# AI suggestions for short description %>
-            <% if @analysis.parsed_ai_suggestions.present? && @analysis.parsed_ai_suggestions['short_description'].present? %>
-              <div class="card bg-darker text-light border-secondary">
-                <div class="card-body">
-                  <h6 class="text-primary mb-2">AI Suggestion:</h6>
-                  <p class="mb-0"><%= @analysis.parsed_ai_suggestions['short_description'] %></p>
-                </div>
-              </div>
-            <% end %>
-          </div>
-
-          <%# About Section %>
-          <div class="mb-4">
-            <h5 class="text-primary">About Section</h5>
-            <div class="mb-3">
-              <% if @game.about_the_game.present? %>
-                <%= sanitize @game.about_the_game %>
-              <% else %>
-                <span class="text-muted">No about section provided</span>
-              <% end %>
-            </div>
-
-            <%# AI suggestions for about section %>
-            <% if @analysis.parsed_ai_suggestions.present? && @analysis.parsed_ai_suggestions['first_paragraph'].present? %>
-              <div class="card bg-darker text-light border-secondary">
-                <div class="card-body">
-                  <h6 class="text-primary mb-2">AI Suggestion for Introduction:</h6>
-                  <p class="mb-0"><%= @analysis.parsed_ai_suggestions['first_paragraph'] %></p>
-                </div>
-              </div>
-            <% end %>
-          </div>
-
-          <%# Feature List Section %>
-          <div>
-            <h5 class="text-primary">Key Features</h5>
-            <% if @analysis.parsed_ai_suggestions.present? && @analysis.parsed_ai_suggestions['feature_list'].present? && @analysis.parsed_ai_suggestions['feature_list'].any? %>
-              <div class="card bg-darker text-light border-secondary">
-                <div class="card-body">
-                  <h6 class="text-primary mb-2">AI Suggested Features:</h6>
-                  <ul class="mb-0">
-                    <% @analysis.parsed_ai_suggestions['feature_list'].each do |feature| %>
-                      <li><%= feature %></li>
-                    <% end %>
-                  </ul>
-                </div>
-              </div>
-            <% else %>
-              <p class="text-muted">No feature list available</p>
-            <% end %>
-          </div>
-        </div>
+    <%# Text Analysis Overview %>
+    <div class="steam-section">
+      <div class="steam-section-header">
+        Text Analysis Overview
+        <span class="analysis-score <%= @analysis.parsed_text_report['score'] == 'A' ? 'score-a' : 'score-b' %>">
+          Score: <%= @analysis.parsed_text_report['score'] %>
+        </span>
+      </div>
+      <div class="steam-section-content">
+        <p>Below you'll find a detailed comparison between your current Steam page content and AI-optimized suggestions.</p>
       </div>
     </div>
 
     <%# Visual Analysis Section %>
     <%= render 'shared/visuals_section', visual_report: @analysis.parsed_visual_report %>
 
+    <%# Capsule Image Analysis Section %>
+    <%= render 'shared/capsule_section' %>
+    
+    <%# Short Description Section %>
+    <div class="steam-section">
+      <div class="steam-section-header">
+        Short Description
+      </div>
+      <div class="steam-section-content">
+        <div class="steam-comparison">
+          <!-- Current Version -->
+          <div class="steam-version">
+            <div class="version-header current">
+              Current Steam Page
+            </div>
+            <div class="version-content">
+              <div class="content-block">
+                <h6>Short Description</h6>
+                <% if @game.short_description.present? %>
+                  <p><%= sanitize @game.short_description %></p>
+                <% else %>
+                  <p class="text-muted">No short description provided</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI-Optimized Version -->
+          <div class="steam-version">
+            <div class="version-header optimized">
+              Optimized Version
+            </div>
+            <div class="version-content">
+              <div class="content-block">
+                <h6>Short Description</h6>
+                <% if @analysis.parsed_ai_suggestions.present? && @analysis.parsed_ai_suggestions['short_description'].present? %>
+                  <div class="content-with-copy">
+                    <div class="content">
+                      <p><%= @analysis.parsed_ai_suggestions['short_description'] %></p>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('<%= escape_javascript(@analysis.parsed_ai_suggestions['short_description']) %>')">
+                      <i class="fas fa-copy"></i>
+                    </button>
+                  </div>
+                <% else %>
+                  <p class="text-muted">No AI suggestion available</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <%# Tags Analysis Section %>
     <%= render 'shared/tags_section', tags_list: @analysis.parsed_tags_list %>
 
-    <%# Capsule Image Analysis Section %>
-    <%= render 'shared/capsule_section' %>
+    <%# About This Game Section %>
+    <div class="steam-section">
+      <div class="steam-section-header">
+        About This Game
+      </div>
+      <div class="steam-section-content">
+        <div class="steam-comparison">
+          <!-- Current Version -->
+          <div class="steam-version">
+            <div class="version-header current">
+              Current Steam Page
+            </div>
+            <div class="version-content">
+              <div class="content-block">
+                <h6>About This Game</h6>
+                <% if @game.about_the_game.present? %>
+                  <div><%= sanitize @game.about_the_game %></div>
+                <% else %>
+                  <p class="text-muted">No about section provided</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI-Optimized Version -->
+          <div class="steam-version">
+            <div class="version-header optimized">
+              Optimized Version
+            </div>
+            <div class="version-content">
+              <div class="content-block">
+                <h6>About This Game</h6>
+                <% if @analysis.parsed_ai_suggestions.present? && @analysis.parsed_ai_suggestions['first_paragraph'].present? %>
+                  <div class="content-with-copy">
+                    <div class="content">
+                      <div><%= @analysis.parsed_ai_suggestions['first_paragraph'] %></div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('<%= escape_javascript(@analysis.parsed_ai_suggestions['first_paragraph']) %>')">
+                      <i class="fas fa-copy"></i>
+                    </button>
+                  </div>
+                <% else %>
+                  <p class="text-muted">No AI suggestion available</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%# Key Features Section %>
+    <div class="steam-section">
+      <div class="steam-section-header">
+        Key Features
+      </div>
+      <div class="steam-section-content">
+        <div class="steam-comparison">
+          <!-- Current Version -->
+          <div class="steam-version">
+            <div class="version-header current">
+              Current Steam Page
+            </div>
+            <div class="version-content">
+              <div class="content-block">
+                <h6>Key Features</h6>
+                <p class="text-muted">No feature list available in current version</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI-Optimized Version -->
+          <div class="steam-version">
+            <div class="version-header optimized">
+              Optimized Version
+            </div>
+            <div class="version-content">
+              <div class="content-block">
+                <h6>Key Features</h6>
+                <% if @analysis.parsed_ai_suggestions.present? && @analysis.parsed_ai_suggestions['feature_list'].present? && @analysis.parsed_ai_suggestions['feature_list'].any? %>
+                  <div class="content-with-copy">
+                    <div class="content">
+                      <ul>
+                        <% @analysis.parsed_ai_suggestions['feature_list'].each do |feature| %>
+                          <li><%= feature %></li>
+                        <% end %>
+                      </ul>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('<%= escape_javascript(@analysis.parsed_ai_suggestions['feature_list'].map { |f| "• #{f}" }.join("\n")) %>')">
+                      <i class="fas fa-copy"></i>
+                    </button>
+                  </div>
+                <% else %>
+                  <p class="text-muted">No AI suggestions available</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
