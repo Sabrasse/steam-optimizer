@@ -4,11 +4,11 @@
     <p>This game has already been analyzed. You can:</p>
     
     <div class="d-flex gap-3">
-      <a href="<%= show_analysis_path(@game.slug) %>" class="btn btn-primary">
+      <a href="<%= show_analysis_path(@game.slug) %>" class="btn btn-primary" data-controller="base-button">
         <i class="fas fa-chart-bar"></i> View Analysis
       </a>
       
-      <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#requestModal">
+      <button type="button" class="btn btn-secondary" data-controller="base-button" data-bs-toggle="modal" data-bs-target="#requestModal">
         <i class="fas fa-redo"></i> Request New Analysis
       </button>
     </div>
@@ -39,9 +39,9 @@
         </div>
       </div>
       <div class="modal-footer border-secondary">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary" data-controller="base-button" data-bs-dismiss="modal">Cancel</button>
         <a href="mailto:admin@steampageoptimizer.com?subject=New Analysis Request for <%= @game.name %>&body=Hi,%0A%0AI'd like to request a new analysis for the game <%= @game.name %> (Steam ID: <%= @game.steam_app_id %>).%0A%0ACurrent analysis was done on <%= @game.analyses.latest.created_at.strftime("%B %d, %Y") %>.%0A%0AThe game's Steam page is: https://store.steampowered.com/app/<%= @game.steam_app_id %>%0A%0ABest regards,%0A[Your name]" 
-           class="btn btn-primary">
+           class="btn btn-primary" data-controller="base-button">
           <i class="fas fa-paper-plane"></i> Send Request
         </a>
       </div>

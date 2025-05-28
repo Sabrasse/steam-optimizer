@@ -73,11 +73,13 @@
         <%# Navigation controls %>
         <div class="navigation-controls mt-4 d-flex justify-content-between">
           <button class="btn btn-outline-primary" 
+                  data-controller="base-button"
                   data-analysis-target="prevButton"
                   data-action="click->analysis#previous">
             <i class="fas fa-chevron-left"></i> Previous
           </button>
           <button class="btn btn-primary" 
+                  data-controller="base-button"
                   data-analysis-target="nextButton"
                   data-action="click->analysis#next">
             Next <i class="fas fa-chevron-right"></i>

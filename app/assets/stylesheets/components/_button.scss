@@ -1,7 +1,4 @@
 .btn {
-  @extend .btn;  // Inherit Bootstrap button styles
-  @extend .btn-primary; // Default to Bootstrap's primary color
-
   border-radius: 30px;
   font-weight: bold;
   padding: 12px 20px;

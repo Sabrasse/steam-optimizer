@@ -5,6 +5,11 @@
     <title><%= content_for?(:title) ? yield(:title) : "Steam Page Optimizer" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     
+    <!-- Common Meta Tags -->
+    <meta name="keywords" content="Steam, game marketing, store page optimization, Steam analytics, game development, indie games, Steam visibility, game promotion">
+    <meta name="author" content="Steam Page Optimizer">
+    <meta name="robots" content="index, follow">
+    
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,8 +38,6 @@
     <main class="flex-grow-1" role="main">
       <%= yield %>
     </main>
-
-    <%# <%= render "shared/footer" %>
     
     <%= yield :scripts %>
   </body>

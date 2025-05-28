@@ -1,12 +1,6 @@
 <% content_for :head do %>
   <title>Steam Page Optimizer - Analyze & Improve Your Steam Store Page Performance</title>
   <meta name="description" content="Free Steam store page analyzer tool. Get AI-powered insights and optimization suggestions for your game's Steam page. Improve visibility, conversions, and sales.">
-  <meta name="keywords" content="Steam, game marketing, store page optimization, Steam analytics, game development, indie games, Steam visibility, game promotion">
-  <meta name="author" content="Steam Page Optimizer">
-  <meta name="robots" content="index, follow">
-  
-  <!-- Canonical URL -->
-  <link rel="canonical" href="<%= root_url %>">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -14,43 +8,13 @@
   <meta property="og:title" content="Steam Page Optimizer - Analyze & Improve Your Steam Store Page">
   <meta property="og:description" content="Free Steam store page analyzer tool. Get AI-powered insights and optimization suggestions for your game's Steam page.">
   <meta property="og:image" content="<%= root_url %>og-image.jpg">
-  <meta property="og:site_name" content="Steam Page Optimizer">
-  
+
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="<%= root_url %>">
   <meta name="twitter:title" content="Steam Page Optimizer - Analyze & Improve Your Steam Store Page">
   <meta name="twitter:description" content="Free Steam store page analyzer tool. Get AI-powered insights and optimization suggestions for your game's Steam page.">
   <meta name="twitter:image" content="<%= root_url %>og-image.jpg">
-  
-  <!-- Schema.org JSON-LD -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Steam Page Optimizer",
-    "description": "Free Steam store page analyzer tool that provides AI-powered insights and optimization suggestions for game developers",
-    "url": "<%= root_url %>",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Any",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "featureList": [
-      "Steam store page analysis",
-      "AI-powered content suggestions",
-      "Visual optimization recommendations",
-      "Tag analysis and improvement",
-      "Performance scoring"
-    ],
-    "creator": {
-      "@type": "Organization",
-      "name": "Steam Page Optimizer"
-    }
-  }
-  </script>
   
   <% if @latest_analyses&.any? %>
   <!-- Schema.org for Latest Games -->
@@ -117,7 +81,7 @@
               <article class="col-md-4 mb-3">
                 <%= link_to show_analysis_path(game_slug: analysis.game.slug), class: "text-decoration-none", 
                     'aria-label': "View analysis for #{analysis.game.name}" do %>
-                  <div class="card h-100 hover-card">
+                  <div class="card h-100">
                     <% if analysis.game.capsule_image_url.present? %>
                       <img src="<%= analysis.game.capsule_image_url %>" 
                            class="card-img-top" 
