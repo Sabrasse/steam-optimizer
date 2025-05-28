@@ -1,0 +1,34 @@
+<%# 
+  Primary Button Component
+  
+  Usage:
+  <%= render "components/primary_button/primary_button", 
+      text: "Click me",
+      type: "button", # or "submit"
+      loading: false,
+      disabled: false,
+      class: "additional-classes",
+      data: { action: "click->primary-button#click" }
+  %>
+
+  Parameters:
+  - text: The button text (required)
+  - type: Button type (default: "button")
+  - loading: Loading state (default: false)
+  - disabled: Disabled state (default: false)
+  - class: Additional CSS classes
+  - data: Additional data attributes
+%>
+
+<button
+  type="<%= local_assigns[:type] || 'button' %>"
+  class="primary-button <%= local_assigns[:class] %>"
+  data-controller="primary-button"
+  data-primary-button-loading-value="<%= local_assigns[:loading] || false %>"
+  <%= "disabled" if local_assigns[:disabled] %>
+  <% local_assigns[:data]&.each do |key, value| %>
+    data-<%= key %>="<%= value %>"
+  <% end %>
+>
+  <%= text %>
+</button> 

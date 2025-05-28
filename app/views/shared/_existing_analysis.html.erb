@@ -1,0 +1,50 @@
+<div class="card bg-dark text-light border-secondary mt-4">
+  <div class="card-body">
+    <h3 class="card-title">Game Already Analyzed</h3>
+    <p>This game has already been analyzed. You can:</p>
+    
+    <div class="d-flex gap-3">
+      <a href="<%= show_analysis_path(@game.slug) %>" class="btn btn-primary">
+        <i class="fas fa-chart-bar"></i> View Analysis
+      </a>
+      
+      <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#requestModal">
+        <i class="fas fa-redo"></i> Request New Analysis
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="requestModal" tabindex="-1" aria-labelledby="requestModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark text-light">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="requestModalLabel">Request New Analysis</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Would you like to send a message to request a new analysis?</p>
+        
+        <div class="message-preview mb-3 p-3 bg-darker rounded">
+          <p class="mb-1"><strong>Subject:</strong> New Analysis Request for <%= @game.name %></p>
+          <p class="mb-0"><strong>Message:</strong></p>
+          <p class="mb-0">
+            Hi,<br><br>
+            I'd like to request a new analysis for the game <%= @game.name %> (Steam ID: <%= @game.steam_app_id %>).<br><br>
+            Current analysis was done on <%= @game.analyses.latest.created_at.strftime("%B %d, %Y") %>.<br><br>
+            The game's Steam page is: https://store.steampowered.com/app/<%= @game.steam_app_id %><br><br>
+            Best regards,<br>
+            [Your name]
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a href="mailto:admin@steampageoptimizer.com?subject=New Analysis Request for <%= @game.name %>&body=Hi,%0A%0AI'd like to request a new analysis for the game <%= @game.name %> (Steam ID: <%= @game.steam_app_id %>).%0A%0ACurrent analysis was done on <%= @game.analyses.latest.created_at.strftime("%B %d, %Y") %>.%0A%0AThe game's Steam page is: https://store.steampowered.com/app/<%= @game.steam_app_id %>%0A%0ABest regards,%0A[Your name]" 
+           class="btn btn-primary">
+          <i class="fas fa-paper-plane"></i> Send Request
+        </a>
+      </div>
+    </div>
+  </div>
+</div> 

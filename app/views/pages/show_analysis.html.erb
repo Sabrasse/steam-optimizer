@@ -1,25 +1,88 @@
-<div class="container-fluid py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-  </div>
-
+<div class="container-fluid py-4" 
+     data-controller="analysis"
+     data-analysis-processing-value="<%= @analysis.processing? %>"
+     data-analysis-share-url="<%= show_analysis_url(@game.slug) %>"
+     data-analysis-poll-url="<%= show_analysis_path(@game.slug) %>.json">
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-10">
         <div class="d-flex justify-content-between align-items-center mb-4">
           <h1 class="mb-0"><%= @game.name %> Analysis</h1>
           <span class="text-muted">Analyzed on <%= @analysis.created_at.strftime("%B %d, %Y") %></span>
-          <%# <div class="d-flex gap-2">
-            <%# <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestModal">
-              Run New Analysis
-            </button>
-        
-            <button class="btn btn-outline-light" data-bs-toggle="tooltip" title="Copy Link" onclick="copyShareLink()">
-              <i class="fas fa-link"></i>
-            </button> %>
-          <%# </div> %>
         </div>
         
-        <%= render "shared/results", analysis: @analysis %>
+        <%# Progress indicator %>
+        <div class="progress-indicator mb-4">
+          <div class="d-flex justify-content-between">
+            <div class="step active" data-analysis-target="step" data-section="text-analysis">
+              <div class="step-circle">1</div>
+              <div class="step-label">Text Analysis</div>
+            </div>
+            <div class="step" data-analysis-target="step" data-section="visual-analysis">
+              <div class="step-circle">2</div>
+              <div class="step-label">Visual Analysis</div>
+            </div>
+            <div class="step" data-analysis-target="step" data-section="capsule-analysis">
+              <div class="step-circle">3</div>
+              <div class="step-label">Capsule Image</div>
+            </div>
+            <div class="step" data-analysis-target="step" data-section="description-analysis">
+              <div class="step-circle">4</div>
+              <div class="step-label">Description</div>
+            </div>
+            <div class="step" data-analysis-target="step" data-section="tags-analysis">
+              <div class="step-circle">5</div>
+              <div class="step-label">Tags</div>
+            </div>
+            <div class="step" data-analysis-target="step" data-section="about-analysis">
+              <div class="step-circle">6</div>
+              <div class="step-label">About</div>
+            </div>
+            <div class="step" data-analysis-target="step" data-section="features-analysis">
+              <div class="step-circle">7</div>
+              <div class="step-label">Features</div>
+            </div>
+          </div>
+        </div>
+        
+        <%# Analysis sections %>
+        <div class="analysis-sections">
+          <div class="section active" id="text-analysis" data-analysis-target="section">
+            <%= render "shared/text_analysis", analysis: @analysis %>
+          </div>
+          <div class="section" id="visual-analysis" data-analysis-target="section">
+            <%= render "shared/visuals_section", visual_report: @analysis.parsed_visual_report %>
+          </div>
+          <div class="section" id="capsule-analysis" data-analysis-target="section">
+            <%= render "shared/capsule_section" %>
+          </div>
+          <div class="section" id="description-analysis" data-analysis-target="section">
+            <%= render "shared/description_section", analysis: @analysis %>
+          </div>
+          <div class="section" id="tags-analysis" data-analysis-target="section">
+            <%= render "shared/tags_section", tags_list: @analysis.parsed_tags_list %>
+          </div>
+          <div class="section" id="about-analysis" data-analysis-target="section">
+            <%= render "shared/about_section", analysis: @analysis %>
+          </div>
+          <div class="section" id="features-analysis" data-analysis-target="section">
+            <%= render "shared/features_section", analysis: @analysis %>
+          </div>
+        </div>
+
+        <%# Navigation controls %>
+        <div class="navigation-controls mt-4 d-flex justify-content-between">
+          <button class="btn btn-outline-primary" 
+                  data-analysis-target="prevButton"
+                  data-action="click->analysis#previous">
+            <i class="fas fa-chevron-left"></i> Previous
+          </button>
+          <button class="btn btn-primary" 
+                  data-analysis-target="nextButton"
+                  data-action="click->analysis#next">
+            Next <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -42,49 +105,4 @@
   <meta property="twitter:title" content="<%= @game.name %> - Steam Page Analysis">
   <meta property="twitter:description" content="Analysis of <%= @game.name %>'s Steam store page">
   <meta property="twitter:image" content="<%= @game.capsule_image_url %>">
-<% end %>
-
-<% content_for :scripts do %>
-  <script>
-    function copyShareLink() {
-      const url = '<%= show_analysis_url(@game.slug) %>';
-      navigator.clipboard.writeText(url).then(() => {
-        const tooltip = bootstrap.Tooltip.getInstance(document.querySelector('[data-bs-toggle="tooltip"]'));
-        const originalTitle = tooltip._config.title;
-        tooltip.setContent({ '.tooltip-inner': 'Link copied!' });
-        setTimeout(() => {
-          tooltip.setContent({ '.tooltip-inner': originalTitle });
-        }, 2000);
-      });
-    }
-
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        // Could add a temporary success indicator here if needed
-        console.log('Text copied to clipboard');
-      }).catch(err => {
-        console.error('Failed to copy text: ', err);
-      });
-    }
-
-    // Initialize tooltips
-    document.addEventListener('turbo:load', () => {
-      const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-      tooltips.forEach(tooltip => new bootstrap.Tooltip(tooltip));
-    });
-
-    <% if @analysis.processing? %>
-      // Poll for updates every 2 seconds
-      const pollInterval = setInterval(() => {
-        fetch('<%= show_analysis_path(@game.slug) %>.json')
-          .then(response => response.json())
-          .then(data => {
-            if (data.status === 'completed') {
-              clearInterval(pollInterval);
-              window.location.reload();
-            }
-          });
-      }, 2000);
-    <% end %>
-  </script>
 <% end %>

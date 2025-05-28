@@ -99,7 +99,14 @@ class PagesController < ApplicationController
   end
 
   def show_analysis
+    Rails.logger.debug "=== Show Analysis Debug ==="
+    Rails.logger.debug "Params: #{params.inspect}"
+    Rails.logger.debug "Request format: #{request.format}"
+    Rails.logger.debug "Request path: #{request.path}"
+    Rails.logger.debug "Request method: #{request.method}"
+    
     @game = Game.find_by!(slug: params[:game_slug])
+    Rails.logger.debug "Found game: #{@game.inspect}"
     
     # If an analysis ID is provided, use that specific analysis
     # Otherwise, use the latest analysis
@@ -108,6 +115,7 @@ class PagesController < ApplicationController
     else
       @game.analyses.latest
     end
+    Rails.logger.debug "Found analysis: #{@analysis.inspect}"
 
     respond_to do |format|
       format.html
