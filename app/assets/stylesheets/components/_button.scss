@@ -20,3 +20,20 @@
       background-color: darken($tertiary, 10%);
     }
   }
+
+.btn-outline-primary {
+  border: 2px solid $tertiary;
+  color: $tertiary;
+  background-color: transparent;
+  
+  &:hover {
+    background-color: $tertiary;
+    color: $dark;
+  }
+}
+
+.navigation-controls {
+  .btn {
+    min-width: 120px;
+  }
+}
