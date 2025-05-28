@@ -10,11 +10,9 @@ class PagesController < ApplicationController
                               .includes(:game)
     
     if request.post?
-      Rails.logger.debug "Form submitted with params: #{params.inspect}"
       
       # Retrieve the App ID from form input (it may be an ID or a full URL)
       input = params[:app_id].to_s.strip
-      Rails.logger.debug "Input received: #{input}"
       
       if input.blank?
         @error_message = "Please enter a Steam App ID or URL."
@@ -23,7 +21,6 @@ class PagesController < ApplicationController
 
       # Use the SteamApiClient service to fetch game data from Steam
       app_id = SteamApiClient.extract_app_id(input)
-      Rails.logger.debug "Extracted App ID: #{app_id}"
       
       # Find or create the game
       @game = Game.find_or_initialize_by(steam_app_id: app_id)
@@ -99,12 +96,6 @@ class PagesController < ApplicationController
   end
 
   def show_analysis
-    Rails.logger.debug "=== Show Analysis Debug ==="
-    Rails.logger.debug "Params: #{params.inspect}"
-    Rails.logger.debug "Request format: #{request.format}"
-    Rails.logger.debug "Request path: #{request.path}"
-    Rails.logger.debug "Request method: #{request.method}"
-    
     @game = Game.find_by!(slug: params[:game_slug])
     Rails.logger.debug "Found game: #{@game.inspect}"
     

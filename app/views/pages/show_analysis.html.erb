@@ -11,39 +11,7 @@
           <span class="text-muted">Analyzed on <%= @analysis.created_at.strftime("%B %d, %Y") %></span>
         </div>
         
-        <%# Progress indicator %>
-        <div class="progress-indicator mb-4">
-          <div class="d-flex justify-content-between">
-            <div class="step active" data-analysis-target="step" data-section="text-analysis">
-              <div class="step-circle">1</div>
-              <div class="step-label">Text Analysis</div>
-            </div>
-            <div class="step" data-analysis-target="step" data-section="visual-analysis">
-              <div class="step-circle">2</div>
-              <div class="step-label">Visual Analysis</div>
-            </div>
-            <div class="step" data-analysis-target="step" data-section="capsule-analysis">
-              <div class="step-circle">3</div>
-              <div class="step-label">Capsule Image</div>
-            </div>
-            <div class="step" data-analysis-target="step" data-section="description-analysis">
-              <div class="step-circle">4</div>
-              <div class="step-label">Description</div>
-            </div>
-            <div class="step" data-analysis-target="step" data-section="tags-analysis">
-              <div class="step-circle">5</div>
-              <div class="step-label">Tags</div>
-            </div>
-            <div class="step" data-analysis-target="step" data-section="about-analysis">
-              <div class="step-circle">6</div>
-              <div class="step-label">About</div>
-            </div>
-            <div class="step" data-analysis-target="step" data-section="features-analysis">
-              <div class="step-circle">7</div>
-              <div class="step-label">Features</div>
-            </div>
-          </div>
-        </div>
+        <%= render "shared/progress_bar" %>
         
         <%# Analysis sections %>
         <div class="analysis-sections">
@@ -70,19 +38,7 @@
           </div>
         </div>
 
-        <%# Navigation controls %>
-        <div class="navigation-controls mt-4 d-flex justify-content-between">
-          <button class="btn btn-outline-primary" 
-                  data-analysis-target="prevButton"
-                  data-action="click->analysis#previous">
-            <i class="fas fa-chevron-left"></i> Previous
-          </button>
-          <button class="btn btn-primary" 
-                  data-analysis-target="nextButton"
-                  data-action="click->analysis#next">
-            Next <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
+        <%= render "shared/navigation_controls" %>
       </div>
     </div>
   </div>
