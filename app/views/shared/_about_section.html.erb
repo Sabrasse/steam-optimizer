@@ -1,0 +1,49 @@
+<div class="steam-section">
+  <div class="steam-section-header">
+    About This Game
+  </div>
+  <div class="steam-section-content">
+    <div class="steam-comparison">
+      <!-- Current Version -->
+      <div class="steam-version">
+        <div class="version-header current">
+          Current Steam Page
+        </div>
+        <div class="version-content">
+          <div class="content-block">
+            <h6>About This Game</h6>
+            <% if @game.about_the_game.present? %>
+              <div><%= sanitize @game.about_the_game %></div>
+            <% else %>
+              <p class="text-muted">No about section provided</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI-Optimized Version -->
+      <div class="steam-version">
+        <div class="version-header optimized">
+          Optimized Version
+        </div>
+        <div class="version-content">
+          <div class="content-block">
+            <h6>About This Game</h6>
+            <% if analysis.parsed_ai_suggestions.present? && analysis.parsed_ai_suggestions['first_paragraph'].present? %>
+              <div class="content-with-copy">
+                <div class="content">
+                  <div><%= analysis.parsed_ai_suggestions['first_paragraph'] %></div>
+                </div>
+                <button class="copy-btn" onclick="copyToClipboard('<%= escape_javascript(analysis.parsed_ai_suggestions['first_paragraph']) %>')">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            <% else %>
+              <p class="text-muted">No AI suggestion available</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

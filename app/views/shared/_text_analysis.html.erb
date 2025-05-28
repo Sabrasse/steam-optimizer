@@ -1,0 +1,11 @@
+<div class="steam-section">
+  <div class="steam-section-header">
+    Text Analysis Overview
+    <span class="analysis-score <%= analysis.parsed_text_report['score'] == 'A' ? 'score-a' : 'score-b' %>">
+      Score: <%= analysis.parsed_text_report['score'] %>
+    </span>
+  </div>
+  <div class="steam-section-content">
+    <p>Below you'll find a detailed comparison between your current Steam page content and AI-optimized suggestions.</p>
+  </div>
+</div> 
