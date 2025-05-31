@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["section", "step", "prevButton", "nextButton"]
-  
+  // This is a test
   connect() {
     this.currentSectionIndex = 0
     this.updateNavigation()
