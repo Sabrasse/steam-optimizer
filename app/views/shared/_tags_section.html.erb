@@ -32,20 +32,20 @@
             <% if @analysis.parsed_ai_suggestions&.dig(:tags).present? %>
               <div class="content-with-copy">
                 <div class="content">
-                  <div class="analysis-section">
-                    <h6>Suggested Tags</h6>
-                    <p><%= @analysis.parsed_ai_suggestions[:tags][:suggested_tags]&.join(', ') %></p>
-                  </div>
-
-                  <div class="analysis-section">
-                    <h6>Tag Evaluation</h6>
-                    <% if @analysis.parsed_ai_suggestions[:tags][:tag_evaluation].present? %>
-                      <% @analysis.parsed_ai_suggestions[:tags][:tag_evaluation].split("\n").each do |line| %>
-                        <% if line.strip.present? %>
-                          <p><%= line.strip %></p>
-                        <% end %>
+                <div class="analysis-section">
+                  <h6>Tag Evaluation</h6>
+                  <% if @analysis.parsed_ai_suggestions[:tags][:tag_evaluation].present? %>
+                    <% @analysis.parsed_ai_suggestions[:tags][:tag_evaluation].split("\n").each do |line| %>
+                      <% if line.strip.present? %>
+                        <p><%= line.strip %></p>
                       <% end %>
                     <% end %>
+                  <% end %>
+                </div>  
+  
+                <div class="analysis-section">
+                    <h6>Suggested Tags</h6>
+                    <p><%= @analysis.parsed_ai_suggestions[:tags][:suggested_tags]&.join(', ') %></p>
                   </div>
                 </div>
               </div>
