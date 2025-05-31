@@ -12,7 +12,7 @@
         </div>
         <div class="version-content">
           <div class="content-block">
-            <h6>Tags</h6>
+            <h6>Current Tags</h6>
             <% if tags_list.present? %>
               <p><%= tags_list.join(', ') %></p>
             <% else %>
@@ -29,14 +29,29 @@
         </div>
         <div class="version-content">
           <div class="content-block">
-            <h6>AI Recommendations</h6>
-            <% if tags_list.present? %>
-              <p>
-                <i class="fas fa-check-circle"></i> Your tags look good! No major improvements needed.
-              </p>
+            <% if @analysis.parsed_ai_suggestions&.dig(:tags).present? %>
+              <div class="content-with-copy">
+                <div class="content">
+                  <div class="analysis-section">
+                    <h6>Suggested Tags</h6>
+                    <p><%= @analysis.parsed_ai_suggestions[:tags][:suggested_tags]&.join(', ') %></p>
+                  </div>
+
+                  <div class="analysis-section">
+                    <h6>Tag Evaluation</h6>
+                    <% if @analysis.parsed_ai_suggestions[:tags][:tag_evaluation].present? %>
+                      <% @analysis.parsed_ai_suggestions[:tags][:tag_evaluation].split("\n").each do |line| %>
+                        <% if line.strip.present? %>
+                          <p><%= line.strip %></p>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
             <% else %>
               <p>
-                <i class="fas fa-exclamation-circle"></i> No tags found. Consider adding relevant tags to improve discoverability.
+                <i class="fas fa-exclamation-circle"></i> No AI suggestions available
               </p>
             <% end %>
           </div>

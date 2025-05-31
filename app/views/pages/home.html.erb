@@ -48,29 +48,39 @@
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-md-8">
-      <header class="banner">
-        <h1 class="text-center mb-4">Steam Page Optimizer</h1>
-        <p class="text-center lead">Enter your game's Steam App ID or full URL to analyze its store page</p>
-        <section class="form py-5" aria-label="Steam Game Analysis Form">
-          <%= form_with url: root_path, method: :post, data: { turbo: false, controller: "form", action: "submit->form#submit" } do |f| %>
-            <div class="mb-3">
-              <%= f.label :app_id, "Steam App ID or URL", class: "form-label" %>
-              <%= f.text_field :app_id, class: "form-control #{'is-invalid' if @error_message}", 
-                  placeholder: "e.g. 480 or https://store.steampowered.com/app/480/Portal_2",
-                  data: { form_target: "input", action: "input->form#inputChanged" } %>
-              <div class="invalid-feedback" data-form-target="errorMessage" style="<%= @error_message ? 'display: block;' : 'display: none;' %>">
-                <%= @error_message if @error_message %>
-              </div>
-            </div>
-            <div class="text-center">
-              <%= f.submit "Analyze Page", class: "btn btn-primary", data: { form_target: "submitButton" } %>
-              <span data-form-target="spinner" style="display:none; margin-left:10px;">
-                <i class="fas fa-spinner fa-spin"></i> Analyzing...
-              </span>
-            </div>
-          <% end %>
-        </section>
-      </header>
+    <header class="banner">
+    <h1 class="text-center mb-4">Steam Page Optimizer</h1>
+    <p class="text-center text-muted mb-4">
+      🎯 Get instant feedback on your capsule image, short description, and tags.<br>
+      🚀 Boost visibility and increase your chances of being wishlisted — or bought.
+    </p>
+    <p class="text-center mb-4">
+      Enter your game's Steam App ID or URL to get started :
+    </p>
+
+    <section class="form py-5" aria-label="Steam Game Analysis Form">
+      <%= form_with url: root_path, method: :post, data: { turbo: false, controller: "form", action: "submit->form#submit" } do |f| %>
+        <div class="mb-3">
+          <%= f.label :app_id, "Steam App ID or URL", class: "form-label" %>
+          <%= f.text_field :app_id, class: "form-control #{'is-invalid' if @error_message}", 
+              placeholder: "e.g. 480 or https://store.steampowered.com/app/480/Portal_2",
+              data: { form_target: "input", action: "input->form#inputChanged" } %>
+          <div class="invalid-feedback" data-form-target="errorMessage" style="<%= @error_message ? 'display: block;' : 'display: none;' %>">
+            <%= @error_message if @error_message %>
+          </div>
+        </div>
+        <p class="text-left text-muted small mt-4">
+          This tool is not affiliated with Valve Corporation or Steam in any way.
+        </p>
+        <div class="text-center">
+          <%= f.submit "Analyze Page", class: "btn btn-primary", data: { form_target: "submitButton" } %>
+          <span data-form-target="spinner" style="display:none; margin-left:10px;">
+            <i class="fas fa-spinner fa-spin"></i> Analyzing...
+          </span>
+        </div>
+      <% end %>
+    </section>
+  </header>
 
       <!-- Latest Games Optimized Section -->
       <% if @latest_analyses&.any? %>
@@ -86,7 +96,6 @@
                       <img src="<%= analysis.game.capsule_image_url %>" 
                            class="card-img-top" 
                            alt="<%= analysis.game.name %> game cover image"
-                           style="height: 200px; object-fit: cover;"
                            loading="lazy">
                     <% else %>
                       <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
