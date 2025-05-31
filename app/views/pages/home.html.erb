@@ -58,7 +58,7 @@
       Enter your game's Steam App ID or URL to get started :
     </p>
 
-    <section class="form py-5" aria-label="Steam Game Analysis Form">
+    <section class="form mb-4" aria-label="Steam Game Analysis Form">
       <%= form_with url: root_path, method: :post, data: { turbo: false, controller: "form", action: "submit->form#submit" } do |f| %>
         <div class="mb-3">
           <%= f.label :app_id, "Steam App ID or URL", class: "form-label" %>
@@ -84,7 +84,7 @@
 
       <!-- Latest Games Optimized Section -->
       <% if @latest_analyses&.any? %>
-        <section class="mt-5" aria-labelledby="latest-games-heading">
+        <section class="mb-4" aria-labelledby="latest-games-heading">
           <h2 id="latest-games-heading" class="text-center mb-4 text-light">Latest Games Optimized</h2>
           <div class="row">
             <% @latest_analyses.each do |analysis| %>
