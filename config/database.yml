@@ -79,6 +79,6 @@ test:
 #
 production:
   <<: *default
-  database: steam_optimizer_production
+  url: <%= ENV['INTERNAL_DATABASE_URL'] %>
   username: steam_optimizer
   password: <%= ENV["STEAM_OPTIMIZER_DATABASE_PASSWORD"] %>
