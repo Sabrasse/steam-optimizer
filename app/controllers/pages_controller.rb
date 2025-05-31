@@ -118,8 +118,11 @@ class PagesController < ApplicationController
   def generate_ai_suggestions(game)
     Rails.logger.debug "OpenAI API Key present: #{ENV['OPENAI_API_KEY'].present?}"
     ai = AiContentSuggester.new
+    tag_suggester = AiTagSuggester.new
+    
     {
-      short_description: ai.improve_short_description(game.short_description)
+      short_description: ai.improve_short_description(game.short_description),
+      tags: tag_suggester.suggest_tags(game)
     }
   end
 
