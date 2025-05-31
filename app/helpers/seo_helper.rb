@@ -1,6 +1,6 @@
 module SeoHelper
   def page_title(title = nil)
-    base_title = "Steam Page Optimizer"
+    base_title = "Polish My Game"
     if title.present?
       "#{title} | #{base_title}"
     else
@@ -46,7 +46,7 @@ module SeoHelper
     when :website
       base_data.merge({
         "@type" => "WebSite",
-        "name" => "Steam Page Optimizer",
+        "name" => "Polish My Game",
         "url" => request.base_url,
         "description" => "Free Steam store page analyzer tool",
         "potentialAction" => {
@@ -58,7 +58,7 @@ module SeoHelper
     when :organization
       base_data.merge({
         "@type" => "Organization",
-        "name" => "Steam Page Optimizer",
+        "name" => "Polish My Game",
         "url" => request.base_url,
         "description" => "Tools and insights for Steam game developers"
       })
