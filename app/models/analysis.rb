@@ -2,8 +2,6 @@ class Analysis < ApplicationRecord
   belongs_to :game
   
   validates :status, presence: true
-  validates :text_report, presence: true, if: :completed?
-  validates :visual_report, presence: true, if: :completed?
   validates :tags_list, presence: true, if: :completed?
   validates :game_id, presence: true
   
@@ -33,8 +31,6 @@ class Analysis < ApplicationRecord
   
   def mark_as_completed!
     # Only convert to JSON if the data isn't already a string
-    self.text_report = text_report.is_a?(String) ? text_report : text_report.to_json
-    self.visual_report = visual_report.is_a?(String) ? visual_report : visual_report.to_json
     self.tags_list = tags_list.is_a?(String) ? tags_list : tags_list.to_json
     self.ai_suggestions = ai_suggestions.is_a?(String) ? ai_suggestions : ai_suggestions.to_json
     
@@ -47,27 +43,6 @@ class Analysis < ApplicationRecord
   
   def mark_as_failed!
     update!(status: :failed)
-  end
-
-  # Add methods to safely parse JSON data
-  def parsed_text_report
-    return {} unless text_report.present?
-    begin
-      text_report.is_a?(String) ? JSON.parse(text_report) : text_report
-    rescue JSON::ParserError => e
-      Rails.logger.error "Error parsing text_report: #{e.message}"
-      {}
-    end
-  end
-
-  def parsed_visual_report
-    return {} unless visual_report.present?
-    begin
-      visual_report.is_a?(String) ? JSON.parse(visual_report) : visual_report
-    rescue JSON::ParserError => e
-      Rails.logger.error "Error parsing visual_report: #{e.message}"
-      {}
-    end
   end
 
   def parsed_tags_list
@@ -83,10 +58,24 @@ class Analysis < ApplicationRecord
   def parsed_ai_suggestions
     return {} unless ai_suggestions.present?
     begin
-      ai_suggestions.is_a?(String) ? JSON.parse(ai_suggestions) : ai_suggestions
+      raw = ai_suggestions.is_a?(String) ? JSON.parse(ai_suggestions) : ai_suggestions
+      deep_symbolize_keys(raw)
     rescue JSON::ParserError => e
       Rails.logger.error "Error parsing ai_suggestions: #{e.message}"
       {}
+    end
+  end
+
+  private
+
+  def deep_symbolize_keys(obj)
+    case obj
+    when Hash
+      obj.each_with_object({}) { |(k, v), h| h[k.to_sym] = deep_symbolize_keys(v) }
+    when Array
+      obj.map { |v| deep_symbolize_keys(v) }
+    else
+      obj
     end
   end
 end

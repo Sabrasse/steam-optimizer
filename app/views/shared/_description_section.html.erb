@@ -28,18 +28,127 @@
         </div>
         <div class="version-content">
           <div class="content-block">
-            <h6>Short Description</h6>
-            <% if analysis.parsed_ai_suggestions.present? && analysis.parsed_ai_suggestions['short_description'].present? %>
+            <% if analysis.parsed_ai_suggestions.present? && analysis.parsed_ai_suggestions[:short_description].present? %>
               <div class="content-with-copy">
                 <div class="content">
-                  <p><%= analysis.parsed_ai_suggestions['short_description'] %></p>
+                  <% analysis_data = analysis.parsed_ai_suggestions[:short_description] %>
+
+                  <div class="analysis-section">
+                    <h6>1. Length Check <%= analysis_data[:length_check]&.[](:status) %></h6>
+                    <% if analysis_data[:length_check]&.[](:details) %>
+                      <p><%= analysis_data[:length_check][:details] %> characters</p>
+                    <% end %>
+                  </div>
+
+                  <div class="analysis-section">
+                    <h6>2. Clarity <%= analysis_data[:clarity]&.[](:status) %></h6>
+                    <% if analysis_data[:clarity]&.[](:details) %>
+                      <% clarity = analysis_data[:clarity][:details] %>
+                      <% if clarity.is_a?(Array) %>
+                        <ul>
+                          <% clarity.each do |item| %>
+                            <li><%= item %></li>
+                          <% end %>
+                        </ul>
+                      <% else %>
+                        <p><%= clarity %></p>
+                      <% end %>
+                    <% end %>
+                  </div>
+
+                  <div class="analysis-section">
+                    <h6>3. Tone Match <%= analysis_data[:tone_match]&.[](:status) %></h6>
+                    <% if analysis_data[:tone_match]&.[](:details) %>
+                      <% tone = analysis_data[:tone_match][:details] %>
+                      <% if tone.is_a?(Array) %>
+                        <ul>
+                          <% tone.each do |item| %>
+                            <li><%= item %></li>
+                          <% end %>
+                        </ul>
+                      <% else %>
+                        <p><%= tone %></p>
+                      <% end %>
+                    <% end %>
+                  </div>
+
+                  <div class="analysis-section">
+                    <h6>4. Unique Selling Point USP <%= analysis_data[:usp]&.[](:status) %></h6>
+                    <% if analysis_data[:usp]&.[](:details) %>
+                      <% usp = analysis_data[:usp][:details] %>
+                      <% if usp.is_a?(Array) %>
+                        <ul>
+                          <% usp.each do |item| %>
+                            <li><%= item %></li>
+                          <% end %>
+                        </ul>
+                      <% else %>
+                        <p><%= usp %></p>
+                      <% end %>
+                    <% end %>
+                  </div>
+
+                  <div class="analysis-section">
+                    <h6>5. Generic Language Check <%= analysis_data[:generic_language]&.[](:status) %></h6>
+                    <% if analysis_data[:generic_language]&.[](:details) %>
+                      <% generic = analysis_data[:generic_language][:details] %>
+                      <% if generic.is_a?(Array) %>
+                        <ul>
+                          <% generic.each do |item| %>
+                            <li><%= item %></li>
+                          <% end %>
+                        </ul>
+                      <% else %>
+                        <p><%= generic %></p>
+                      <% end %>
+                    <% end %>
+                  </div>
+
+                  <div class="analysis-section">
+                    <h6>6. Feature Dump Check <%= analysis_data[:feature_dump]&.[](:status) %></h6>
+                    <% if analysis_data[:feature_dump]&.[](:details) %>
+                      <% feature = analysis_data[:feature_dump][:details] %>
+                      <% if feature.is_a?(Array) %>
+                        <ul>
+                          <% feature.each do |item| %>
+                            <li><%= item %></li>
+                          <% end %>
+                        </ul>
+                      <% else %>
+                        <p><%= feature %></p>
+                      <% end %>
+                    <% end %>
+                  </div>
+
+                  <% if analysis_data[:suggestions].present? %>
+                    <div class="analysis-section">
+                      <h6>7. Suggestions for Improvement</h6>
+                      <% suggestions = analysis_data[:suggestions] %>
+                      <% if suggestions.is_a?(Array) %>
+                        <ul>
+                          <% suggestions.each do |tip| %>
+                            <li><%= tip %></li>
+                          <% end %>
+                        </ul>
+                      <% else %>
+                        <% suggestions.to_s.split(/\n|\r/).each do |tip| %>
+                          <p><%= tip %></p>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  <% end %>
+
+                  <div class="analysis-section">
+                    <h6>8. Improved Short Description</h6>
+                    <blockquote class="improved-description"><%= analysis_data[:improved_description] %></blockquote>
+                  </div>
                 </div>
-                <button class="copy-btn" onclick="copyToClipboard('<%= escape_javascript(analysis.parsed_ai_suggestions['short_description']) %>')">
+                <button class="copy-btn" onclick="copyToClipboard('<%= escape_javascript(analysis_data[:improved_description]) %>')">
                   <i class="fas fa-copy"></i>
                 </button>
               </div>
             <% else %>
-              <p class="text-muted">No AI suggestion available</p>
+              <p>No AI suggestion available</p>
             <% end %>
           </div>
         </div>

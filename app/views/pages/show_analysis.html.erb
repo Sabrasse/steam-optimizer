@@ -15,12 +15,6 @@
         
         <%# Analysis sections %>
         <div class="analysis-sections">
-          <div class="section active" id="text-analysis" data-analysis-target="section">
-            <%= render "shared/text_analysis", analysis: @analysis %>
-          </div>
-          <div class="section" id="visual-analysis" data-analysis-target="section">
-            <%= render "shared/visuals_section", visual_report: @analysis.parsed_visual_report %>
-          </div>
           <div class="section" id="capsule-analysis" data-analysis-target="section">
             <%= render "shared/capsule_section" %>
           </div>
@@ -29,12 +23,6 @@
           </div>
           <div class="section" id="tags-analysis" data-analysis-target="section">
             <%= render "shared/tags_section", tags_list: @analysis.parsed_tags_list %>
-          </div>
-          <div class="section" id="about-analysis" data-analysis-target="section">
-            <%= render "shared/about_section", analysis: @analysis %>
-          </div>
-          <div class="section" id="features-analysis" data-analysis-target="section">
-            <%= render "shared/features_section", analysis: @analysis %>
           </div>
         </div>
 

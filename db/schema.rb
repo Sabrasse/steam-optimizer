@@ -10,14 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_13_112728) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_29_145010) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "analyses", force: :cascade do |t|
     t.bigint "game_id", null: false
-    t.jsonb "text_report", default: {}
-    t.jsonb "visual_report", default: {}
     t.jsonb "tags_list", default: {}
     t.jsonb "ai_suggestions", default: {}
     t.text "image_suggestions"

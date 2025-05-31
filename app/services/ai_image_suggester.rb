@@ -12,17 +12,24 @@ class AiImageSuggester
     return nil if image_url.nil? || image_url.strip.empty?
 
     prompt = <<~PROMPT
-      You are a professional Steam store page designer. Analyze this game's capsule image and provide concise, actionable suggestions.
-
-      Provide exactly 3 bullet points, each containing:
-      - One specific improvement needed
-      - One quick tip on how to implement it
-      - One successful Steam game that does this well
-
-      Keep each bullet point to 2-3 lines maximum.
-      Do not use markdown formatting or special characters.
-      Focus on the most impactful changes only.
-    PROMPT
+    You are a professional Steam store page designer and marketing expert.
+  
+    Analyze the attached image, which is the capsule for a Steam game. Your goal is to identify the most impactful visual improvements that would increase click-through rate (CTR), clarity, and appeal at a glance.
+    
+    
+    Provide exactly 3 short bullet points. Each should include:
+    - A specific issue or missed opportunity visible in the capsule
+    - A brief suggestion for improvement (max 1 sentence)
+    - The name of a successful Steam game that executes this aspect well (for comparison)
+  
+    Rules:
+    - Each bullet point must be no more than 3 lines total.
+    - Do not use markdown, emoji, or special characters.
+    - Prioritize high-ROI visual changes (e.g. font clarity, focal point, contrast, readability, genre signaling).
+  
+    Focus on what a user would notice in a split second when scrolling the Steam store.
+  PROMPT
+  
 
     begin
       Rails.logger.debug "Sending request to OpenAI API for image analysis"
@@ -65,16 +72,18 @@ class AiImageSuggester
 
     prompt = <<~PROMPT
       You are a Steam store page quality assurance specialist. Validate this game's capsule image.
-
-      Provide exactly 3 bullet points:
-      1. Technical check (resolution, format, size)
-      2. Visual check (quality, composition, readability)
-      3. Required actions (if any)
-
-      Keep each bullet point to 2-3 lines maximum.
-      Do not use markdown formatting or special characters.
-      Focus on critical issues only.
+    
+      Provide exactly 3 short bullet points:
+      1. A technical check of the capsule image (resolution, format, size)
+      2. A visual check of the capsule image (quality, composition, readability)
+      3. A required action, only if needed, to improve the image
+    
+      IMPORTANT: Do not include labels like "Technical Check", "Visual Check", or "Required Action".
+      Just write the 3 insights as plain bullet points, each starting with "- ".
+      Do not use markdown, bold text, emojis, or checkmarks.
+      Keep each bullet point concise, no more than 2 lines.
     PROMPT
+  
 
     begin
       Rails.logger.debug "Sending request to OpenAI API for image validation"
