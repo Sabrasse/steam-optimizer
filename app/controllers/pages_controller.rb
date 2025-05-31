@@ -65,15 +65,8 @@ class PagesController < ApplicationController
       begin
         @analysis.mark_as_processing!
         
-        # Text analysis
-        @analysis.text_report = TextAnalyzer.new(@game).analyze
-        
-        # Visual analysis
-        @analysis.visual_report = VisualAnalyzer.new(@game).analyze
-        
         # Tags analysis
         @analysis.tags_list = extract_tags(@game)
-        @tags_score, @tags_feedback = TextAnalyzer.grade_tags(@analysis.tags_list)
         
         # AI suggestions
         @analysis.ai_suggestions = generate_ai_suggestions(@game)
@@ -126,9 +119,7 @@ class PagesController < ApplicationController
     Rails.logger.debug "OpenAI API Key present: #{ENV['OPENAI_API_KEY'].present?}"
     ai = AiContentSuggester.new
     {
-      short_description: ai.improve_short_description(game.short_description),
-      first_paragraph: ai.improve_first_paragraph(game.about_the_game),
-      feature_list: ai.suggest_feature_list(game.about_the_game)
+      short_description: ai.improve_short_description(game.short_description)
     }
   end
 

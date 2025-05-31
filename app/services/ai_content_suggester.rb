@@ -13,9 +13,61 @@ class AiContentSuggester
     return nil if current_short_desc.nil? || current_short_desc.strip.empty?
 
     prompt = <<~PROMPT
-      The following is a short description for a Steam game. Rewrite it to be more compelling and engaging, while keeping it concise (around 120-300 characters):
-      "#{current_short_desc.strip}"
-    PROMPT
+    You are an expert in video game marketing and Steam store optimization. Analyze the following short description to assess its effectiveness at engaging potential players.
+
+    Provide a quality score for each section using ✔️ / ⚠️ / ❌, and give short, actionable feedback for any ⚠️ or ❌.
+
+    IMPORTANT FORMAT INSTRUCTIONS:
+      - Section 1 (Length Check) must include:
+        - The score symbol ✔️ / ⚠️ / ❌
+        - The character count in this format: "Character count: 193."
+        - A short explanation (1 line max) on whether it's too short, too long, or ideal.
+        - The entire response should be on a single line, like this:  
+          - ✔️ Character count: 193. The description is within the ideal range.
+      - Sections 2–6 must follow this format:
+      - ✔️ Your explanation here.  
+      - ⚠️ Your explanation here.  
+      - ❌ Your explanation here.  
+      - Do not repeat the score before or after the bullet point.
+      - Use only plain text, no markdown, bold, or indentation.
+      - Keep all answers clean and uniform.
+
+    At the end, rewrite the description to make it more compelling and conversion-focused (ideally between 120–300 characters).
+
+    Respond in this exact format:
+
+    ===
+    Overall Summary:
+    [1–2 line summary of strengths or key issue]
+
+    1. Length Check (✔️ / ⚠️ / ❌)
+      - [✔️ or ⚠️ or ❌] Character count: [number]. [brief explanation]
+
+    2. Clarity (✔️ / ⚠️ / ❌)
+    - [✔️ or ⚠️ or ❌] Your explanation here.
+
+    3. Tone Match (✔️ / ⚠️ / ❌)
+    - [✔️ or ⚠️ or ❌] Your explanation here.
+
+    4. Unique Selling Point (USP) (✔️ / ⚠️ / ❌)
+    - [✔️ or ⚠️ or ❌] Your explanation here.
+
+    5. Generic Language Check (✔️ / ⚠️ / ❌)
+    - [✔️ or ⚠️ or ❌] Your explanation here.
+
+    6. Feature Dump Check (✔️ / ⚠️ / ❌)
+    - [✔️ or ⚠️ or ❌] Your explanation here.
+
+    7. Suggestions for Improvement
+    - Tip 1: [brief actionable tip]
+    - Tip 2: [optional]
+
+    8. Improved Short Description
+    - "[rewritten description]" (Character count in parentheses)
+
+    Now analyze this short description:
+    "#{current_short_desc.strip}"
+  PROMPT
 
     begin
       Rails.logger.debug "Sending request to OpenAI API for short description"
@@ -30,96 +82,63 @@ class AiContentSuggester
       )
       Rails.logger.debug "Raw API Response for short description: #{response.inspect}"
 
-      new_desc = response.dig("choices", 0, "message", "content")
-      Rails.logger.debug "Extracted new description: #{new_desc.inspect}"
-      new_desc&.strip
-    rescue StandardError => e
-      Rails.logger.error "OpenAI API Error in improve_short_description: #{e.message}"
-      Rails.logger.error e.backtrace.join("\n")
-      nil
-    end
-  end
+      content = response.dig("choices", 0, "message", "content")
+      Rails.logger.debug "Extracted content: #{content.inspect}"
+      return nil unless content
 
-  # Suggests an improved first paragraph for the long description.
-  def improve_first_paragraph(full_description)
-    Rails.logger.debug "Attempting to improve first paragraph: #{full_description.present?}"
-    return nil if full_description.nil? || full_description.strip.empty?
+      # Parse the response into a structured hash
+      sections = content.split(/\d+\.\s+/).reject(&:empty?)
+      analysis = {}
 
-    # Extract current first paragraph from the full description
-    current_intro = full_description.split(/\r?\n\r?\n/)[0] || full_description
-    Rails.logger.debug "Extracted current intro: #{current_intro.present?}"
-
-    prompt = <<~PROMPT
-      Here is the first part of a Steam game's description:
-      """
-      #{current_intro.strip}
-      """
-      Rewrite this introduction to grab the reader's attention more effectively (keep it concise, around 100-500 characters).
-    PROMPT
-
-    begin
-      Rails.logger.debug "Sending request to OpenAI API for first paragraph"
-      response = @client.chat(
-        parameters: {
-          model: MODEL,
-          messages: [
-            { role: "user", content: prompt.strip }
-          ],
-          temperature: 0.7
-        }
-      )
-      Rails.logger.debug "Raw API Response for first paragraph: #{response.inspect}"
-
-      new_intro = response.dig("choices", 0, "message", "content")
-      Rails.logger.debug "Extracted new intro: #{new_intro.inspect}"
-      new_intro&.strip
-    rescue StandardError => e
-      Rails.logger.error "OpenAI API Error in improve_first_paragraph: #{e.message}"
-      Rails.logger.error e.backtrace.join("\n")
-      nil
-    end
-  end
-
-  # Generates a bullet-point list of 5 key features of the game, based on its long description
-  def suggest_feature_list(full_description)
-    Rails.logger.debug "Attempting to suggest feature list: #{full_description.present?}"
-    return nil if full_description.nil? || full_description.strip.empty?
-
-    prompt = <<~PROMPT
-      Based on the following game description, list 5 key features or selling points of the game in a concise, bullet-point format:
-      """
-      #{full_description.strip}
-      """
-    PROMPT
-
-    begin
-      Rails.logger.debug "Sending request to OpenAI API for feature list"
-      response = @client.chat(
-        parameters: {
-          model: MODEL,
-          messages: [
-            { role: "user", content: prompt.strip }
-          ],
-          temperature: 0.7
-        }
-      )
-      Rails.logger.debug "Raw API Response for feature list: #{response.inspect}"
-
-      features_text = response.dig("choices", 0, "message", "content")
-      Rails.logger.debug "Extracted features text: #{features_text.inspect}"
-      return nil unless features_text
-
-      # Post-process the response to format as an array of feature lines (remove any numbering or bullets)
-      features = features_text.strip.split("\n").map do |line|
-        line.gsub(/^\-|\d+\.\s*/, '').strip # remove leading "-" or "1. " etc.
+      sections.each do |section|
+        if section.start_with?("Length Check")
+          match_status = section.match(/(✔️|⚠️|❌)/)
+          match_chars = section.match(/Character(?:s| count)[: ]+(\d+)/i)
+          char_count = match_chars ? match_chars[1] : current_short_desc&.length
+          analysis[:length_check] = {
+            status: match_status ? match_status[1] : nil,
+            details: char_count
+          }
+        elsif section.start_with?("Clarity")
+          match_status = section.match(/\((.*?)\)/)
+          analysis[:clarity] = {
+            status: match_status ? match_status[1] : nil,
+            details: section.split("\n")[1..-1].join("\n").strip
+          }
+        elsif section.start_with?("Tone Match")
+          match_status = section.match(/\((.*?)\)/)
+          analysis[:tone_match] = {
+            status: match_status ? match_status[1] : nil,
+            details: section.split("\n")[1..-1].join("\n").strip
+          }
+        elsif section.start_with?("Unique Selling Point")
+          match_status = section.match(/\((.*?)\)/)
+          analysis[:usp] = {
+            status: match_status ? match_status[1] : nil,
+            details: section.split("\n")[1..-1].join("\n").strip
+          }
+        elsif section.start_with?("Generic Language Check")
+          match_status = section.match(/\((.*?)\)/)
+          analysis[:generic_language] = {
+            status: match_status ? match_status[1] : nil,
+            details: section.split("\n")[1..-1].join("\n").strip
+          }
+        elsif section.start_with?("Feature Dump Check")
+          match_status = section.match(/\((.*?)\)/)
+          analysis[:feature_dump] = {
+            status: match_status ? match_status[1] : nil,
+            details: section.split("\n")[1..-1].join("\n").strip
+          }
+        elsif section.start_with?("Suggestions for Improvement")
+          analysis[:suggestions] = section.split("\n")[1..-1].join("\n").strip
+        elsif section.start_with?("Improved Short Description")
+          analysis[:improved_description] = section.split("\n")[1..-1].join("\n").strip
+        end
       end
 
-      # Remove any blank lines and limit to 5
-      final_features = features.select { |f| !f.empty? }[0...5]
-      Rails.logger.debug "Final processed features: #{final_features.inspect}"
-      final_features
+      analysis
     rescue StandardError => e
-      Rails.logger.error "OpenAI API Error in suggest_feature_list: #{e.message}"
+      Rails.logger.error "OpenAI API Error in improve_short_description: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
       nil
     end

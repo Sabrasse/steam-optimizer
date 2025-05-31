@@ -6,14 +6,12 @@
     background: linear-gradient(90deg, $secondary 0%, $primary 100%);
     padding: 12px 20px;
     font-weight: 600;
-    font-size: 18px;
     
     .badge {
       background: rgba(255, 255, 255, 0.2);
       color: #ffffff;
       padding: 4px 8px;
       border-radius: 3px;
-      font-size: 12px;
       font-weight: 500;
       margin-left: 10px;
       
@@ -35,7 +33,6 @@
     h4 {
       color: #ffffff;
       margin-bottom: 15px;
-      font-size: 16px;
       font-weight: 600;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       padding-bottom: 8px;
@@ -44,7 +41,6 @@
     h5 {
       color: #66c0f4;
       margin-bottom: 12px;
-      font-size: 14px;
       font-weight: 500;
     }
     
@@ -62,13 +58,6 @@
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         position: relative;
         padding-left: 20px;
-        
-        &:before {
-          content: "•";
-          color: #66c0f4;
-          position: absolute;
-          left: 0;
-        }
         
         &:last-child {
           border-bottom: none;
@@ -99,7 +88,6 @@
       padding: 15px 20px;
       color: #ffffff;
       font-weight: 600;
-      font-size: 16px;
       
       &.current {
         background: linear-gradient(90deg, #8f4a47 0%, #a0522d 100%);
@@ -122,7 +110,6 @@
         
         h6 {
           color: #66c0f4;
-          font-size: 13px;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.5px;
@@ -152,15 +139,6 @@
             padding: 8px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
-            padding-left: 15px;
-            
-            &:before {
-              content: "✓";
-              color: #90ba3c;
-              position: absolute;
-              left: 0;
-              font-weight: bold;
-            }
             
             &:last-child {
               border-bottom: none;
@@ -191,10 +169,6 @@
               background: rgba(102, 192, 244, 0.2);
               border-color: #66c0f4;
             }
-            
-            i {
-              font-size: 12px;
-            }
           }
         }
       }
@@ -211,7 +185,6 @@
   padding: 8px 15px;
   border-radius: 20px;
   font-weight: 600;
-  font-size: 14px;
   margin-left: 15px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   
@@ -227,3 +200,7 @@
     background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
   }
 } 
+
+.analysis-section {
+  margin-bottom: 15px;
+}
