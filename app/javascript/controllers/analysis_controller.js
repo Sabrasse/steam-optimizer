@@ -1,8 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["section", "step", "prevButton", "nextButton"]
-  // This is a test
+  static targets = ["section", "step", "nextButton", "prevButton"]
+  
   connect() {
     this.currentSectionIndex = 0
     this.updateNavigation()
@@ -10,34 +10,13 @@ export default class extends Controller {
     // Initialize tooltips
     const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     tooltips.forEach(tooltip => new bootstrap.Tooltip(tooltip))
-    
-    // Setup polling if needed
-    if (this.element.dataset.processing === "true") {
-      this.startPolling()
-    }
   }
   
-  updateNavigation() {
-    this.prevButtonTarget.disabled = this.currentSectionIndex === 0
-    this.nextButtonTarget.disabled = this.currentSectionIndex === this.sectionTargets.length - 1
-    
-    // Update steps
-    this.stepTargets.forEach((step, index) => {
-      if (index <= this.currentSectionIndex) {
-        step.classList.add('active')
-      } else {
-        step.classList.remove('active')
-      }
-    })
-    
-    // Update sections
-    this.sectionTargets.forEach((section, index) => {
-      if (index === this.currentSectionIndex) {
-        section.classList.add('active')
-      } else {
-        section.classList.remove('active')
-      }
-    })
+  next() {
+    if (this.currentSectionIndex < this.sectionTargets.length - 1) {
+      this.currentSectionIndex++
+      this.updateNavigation()
+    }
   }
   
   previous() {
@@ -47,11 +26,28 @@ export default class extends Controller {
     }
   }
   
-  next() {
-    if (this.currentSectionIndex < this.sectionTargets.length - 1) {
-      this.currentSectionIndex++
-      this.updateNavigation()
-    }
+  updateNavigation() {
+    // Update section visibility
+    this.sectionTargets.forEach((section, index) => {
+      section.style.display = index === this.currentSectionIndex ? 'block' : 'none'
+    })
+    
+    // Update step indicators
+    this.stepTargets.forEach((step, index) => {
+      if (index < this.currentSectionIndex) {
+        step.classList.add('completed')
+        step.classList.remove('active')
+      } else if (index === this.currentSectionIndex) {
+        step.classList.add('active')
+        step.classList.remove('completed')
+      } else {
+        step.classList.remove('active', 'completed')
+      }
+    })
+    
+    // Update button states
+    this.prevButtonTarget.disabled = this.currentSectionIndex === 0
+    this.nextButtonTarget.disabled = this.currentSectionIndex === this.sectionTargets.length - 1
   }
   
   copyShareLink() {
@@ -73,24 +69,5 @@ export default class extends Controller {
     }).catch(err => {
       console.error('Failed to copy text: ', err)
     })
-  }
-  
-  startPolling() {
-    this.pollInterval = setInterval(() => {
-      fetch(this.element.dataset.pollUrl)
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'completed') {
-            clearInterval(this.pollInterval)
-            window.location.reload()
-          }
-        })
-    }, 2000)
-  }
-  
-  disconnect() {
-    if (this.pollInterval) {
-      clearInterval(this.pollInterval)
-    }
   }
 } 

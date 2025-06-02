@@ -10,25 +10,33 @@
   &:hover {
     color: $dark;
     transform: translateY(-2px);
+    background-color: darken($tertiary, 10%);
+  }
+
+  &.active {
+    background-color: $tertiary;
+    color: $dark;
   }
 }
 
 .btn-primary {
-    background-color: $tertiary;
-  
-    &:hover {
-      background-color: darken($tertiary, 10%);
-    }
-  }
+  background-color: $tertiary;
+}
 
-.btn-outline-primary {
-  border: 2px solid $tertiary;
-  color: $tertiary;
-  background-color: transparent;
-  
-  &:hover {
-    background-color: $tertiary;
-    color: $dark;
+.btn-secondary {
+  color: $light;
+  background-color: $secondary;
+}
+
+.btn-icon {
+  color: $light;
+  box-shadow: none;
+  border-color: none;
+
+  &.active {
+    background-color: transparent;
+    color: $tertiary;
+    border-color: transparent;
   }
 }
 

@@ -55,27 +55,32 @@
           </div>
 
           <%# Image validation analysis %>
-          <% if @analysis.image_validation.present? %>
-            <div class="content-block">
-              <h6>Image Validation Analysis</h6>
+          <div class="content-block">
+            <h6>Image Validation</h6>
+            <% if @analysis.image_validation.present? %>
               <div class="content-with-copy">
                 <div class="content">
                   <ul>
-                    <% @analysis.image_validation.split(/\n| - /).each do |validation| %>
+                    <% @analysis.image_validation.split("\n").each do |validation| %>
                       <% if validation.strip.present? %>
-                        <li><%= validation.strip.sub(/^*[^*]+?*:? ?/, '') %></li>
+                        <li><%= validation.strip %></li>
                       <% end %>
                     <% end %>
                   </ul>
                 </div>
               </div>
-              <small class="d-block mt-2">
-                <i class="fas fa-robot"></i> This validation is based on <%= link_to "Steam's requirements for capsule images", "https://partner.steamgames.com/doc/store/assets/standard", target: "_blank" %>
-              </small>
-            </div>
-          <% end %>
+            <% else %>
+              <p>
+                <i class="fas fa-exclamation-circle"></i> No validation available
+              </p>
+            <% end %>
+          </div>
+
+          <%= render "shared/feedback", section: "image" %>
         </div>
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<%# Remove the standalone feedback section %> 

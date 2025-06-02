@@ -1,0 +1,54 @@
+<% content_for :head do %>
+  <title>All Analyzed Games - Polish My Game</title>
+  <meta name="description" content="Browse all games analyzed by Polish My Game. Get insights into Steam store page optimization and best practices.">
+<% end %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <header class="mb-4">
+        <h1 class="text-center mb-4">All Analyzed Games</h1>
+        <p class="text-center text-muted">
+          Browse through all games that have been analyzed for Steam store optimization.
+        </p>
+      </header>
+
+      <div class="row">
+        <% @analyses.each do |analysis| %>
+          <article class="col-md-4 mb-3">
+            <%= link_to show_analysis_path(game_slug: analysis.game.slug), class: "text-decoration-none", 
+                'aria-label': "View analysis for #{analysis.game.name}" do %>
+              <div class="card h-100">
+                <% if analysis.game.capsule_image_url.present? %>
+                  <img src="<%= analysis.game.capsule_image_url %>" 
+                       class="card-img-top" 
+                       alt="<%= analysis.game.name %> game cover image"
+                       loading="lazy">
+                <% else %>
+                  <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                       style="height: 200px;"
+                       role="img" 
+                       aria-label="No image available for <%= analysis.game.name %>">
+                    <i class="fas fa-gamepad fa-3x text-muted" aria-hidden="true"></i>
+                  </div>
+                <% end %>
+                <div class="card-body d-flex flex-column">
+                  <h3 class="card-title text-truncate h6"><%= analysis.game.name %></h3>
+                  <small class="text-muted mt-auto">
+                    <time datetime="<%= analysis.created_at.iso8601 %>">
+                      Analyzed <%= time_ago_in_words(analysis.created_at) %> ago
+                    </time>
+                  </small>
+                </div>
+              </div>
+            <% end %>
+          </article>
+        <% end %>
+      </div>
+
+      <div class="d-flex justify-content-center mt-4">
+        <%= paginate @analyses %>
+      </div>
+    </div>
+  </div>
+</div> 

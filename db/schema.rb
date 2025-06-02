@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_05_29_145010) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_01_114910) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,9 +20,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_05_29_145010) do
     t.jsonb "ai_suggestions", default: {}
     t.text "image_suggestions"
     t.text "image_validation"
-    t.string "status", default: "pending", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "user_rating_tags"
+    t.string "user_rating_image"
+    t.string "user_rating_description"
+    t.text "user_feedback_tags"
+    t.text "user_feedback_image"
+    t.text "user_feedback_description"
     t.index ["game_id", "created_at"], name: "index_analyses_on_game_id_and_created_at"
     t.index ["game_id"], name: "index_analyses_on_game_id"
   end
