@@ -1,0 +1,34 @@
+<%# Feedback section %>
+<div class="feedback-section" 
+     data-controller="feedback"
+     id="feedback-<%= section %>">
+  <div class="d-flex align-items-center">
+    <div class="me-2">
+      <%= form_with url: submit_feedback_path(game_slug: @game.slug), 
+                    method: :post, 
+                    data: { turbo: true } do |f| %>
+        <%= f.hidden_field :analysis_id, value: @analysis.id %>
+        <%= f.hidden_field :section, value: section %>
+        
+        <div role="group" class="d-flex gap-2">
+          <button type="submit" name="rating" value="thumbs_up" class="btn btn-icon <%= 'active' if @analysis.send("user_rating_#{section}").present? && @analysis.send("user_rating_#{section}") == 'thumbs_up' %>">
+            <i class="fas fa-thumbs-up"></i>
+          </button>
+          <button type="submit" name="rating" value="thumbs_down" class="btn btn-icon <%= 'active' if @analysis.send("user_rating_#{section}").present? && @analysis.send("user_rating_#{section}") == 'thumbs_down' %>">
+            <i class="fas fa-thumbs-down"></i>
+          </button>
+        </div>
+        
+        <div class="mt-2" data-feedback-target="feedbackInput">
+          <%= f.text_field :feedback, 
+              class: "form-control", 
+              placeholder: "Optional feedback...",
+              value: @analysis.send("user_feedback_#{section}") %>
+          <button type="submit" class="btn btn-icon">
+            <i class="fas fa-check"></i>
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 

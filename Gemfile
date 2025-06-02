@@ -51,6 +51,7 @@ gem "font-awesome-sass", "~> 6.1"
 gem "simple_form", github: "heartcombo/simple_form"
 gem "sassc-rails"
 gem "dotenv-rails"
+gem "kaminari", "~> 1.2"
 
 # OpenAI client for GPT-3.5/4 API
 gem "ruby-openai", "~> 5.0"

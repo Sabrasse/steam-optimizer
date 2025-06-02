@@ -1,8 +1,6 @@
 <div class="container-fluid py-4" 
      data-controller="analysis"
-     data-analysis-processing-value="<%= @analysis.processing? %>"
-     data-analysis-share-url="<%= show_analysis_url(@game.slug) %>"
-     data-analysis-poll-url="<%= show_analysis_path(@game.slug) %>.json">
+     data-analysis-share-url="<%= show_analysis_url(@game.slug) %>">
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-md-10">

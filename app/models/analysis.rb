@@ -1,50 +1,16 @@
 class Analysis < ApplicationRecord
   belongs_to :game
   
-  validates :status, presence: true
-  validates :tags_list, presence: true, if: :completed?
+  validates :tags_list, presence: true
   validates :game_id, presence: true
   
-  enum status: {
-    processing: 0,
-    completed: 1,
-    failed: 2
-  }
+  # Feedback validations
+  validates :user_rating_tags, inclusion: { in: %w[thumbs_up thumbs_down], allow_nil: true }
+  validates :user_rating_image, inclusion: { in: %w[thumbs_up thumbs_down], allow_nil: true }
+  validates :user_rating_description, inclusion: { in: %w[thumbs_up thumbs_down], allow_nil: true }
   
   scope :latest, -> { order(created_at: :desc).first }
   
-  def processing?
-    status == 'processing'
-  end
-  
-  def completed?
-    status == 'completed'
-  end
-  
-  def failed?
-    status == 'failed'
-  end
-  
-  def mark_as_processing!
-    update!(status: :processing)
-  end
-  
-  def mark_as_completed!
-    # Only convert to JSON if the data isn't already a string
-    self.tags_list = tags_list.is_a?(String) ? tags_list : tags_list.to_json
-    self.ai_suggestions = ai_suggestions.is_a?(String) ? ai_suggestions : ai_suggestions.to_json
-    
-    update!(status: :completed)
-  rescue => e
-    Rails.logger.error "Error marking analysis as completed: #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    mark_as_failed!
-  end
-  
-  def mark_as_failed!
-    update!(status: :failed)
-  end
-
   def parsed_tags_list
     return [] unless tags_list.present?
     begin
@@ -54,7 +20,7 @@ class Analysis < ApplicationRecord
       []
     end
   end
-
+  
   def parsed_ai_suggestions
     return {} unless ai_suggestions.present?
     begin

@@ -150,9 +150,13 @@
             <% else %>
               <p>No AI suggestion available</p>
             <% end %>
+
+            <%= render "shared/feedback", section: "description" %>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<%# Remove the standalone feedback section %> 

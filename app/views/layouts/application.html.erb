@@ -16,11 +16,11 @@
     <link rel="preconnect" href="https://cdn.steampowered.com">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <%= favicon_link_tag 'favicon.ico' %>
+    <%= favicon_link_tag 'apple-touch-icon.png', rel: 'apple-touch-icon', type: 'image/png' %>
+    <%= favicon_link_tag 'favicon-32x32.png', rel: 'icon', type: 'image/png', sizes: '32x32' %>
+    <%= favicon_link_tag 'favicon-16x16.png', rel: 'icon', type: 'image/png', sizes: '16x16' %>
+    <%= favicon_link_tag 'site.webmanifest', rel: 'manifest' %>
     
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>

@@ -13,12 +13,16 @@ Rails.application.routes.draw do
   # Root path showing the form and (after submission) results
   post "/", to: "pages#home"
   
+  # API endpoint for JSON data
+  get "steam_data/:appid", to: "steam_data#show"
+
+  # Games routes
+  get 'games', to: 'pages#games_index', as: :games_index
+
   # Analysis routes
   get ':game_slug', to: 'pages#show_analysis', as: :show_analysis
   get ':game_slug/:id', to: 'pages#show_analysis', as: :show_analysis_version
-
-  # API endpoint for JSON data
-  get "steam_data/:appid", to: "steam_data#show"
+  post ':game_slug/feedback', to: 'pages#submit_feedback', as: :submit_feedback
 
   resources :games do
     member do

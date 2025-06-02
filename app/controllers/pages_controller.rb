@@ -1,10 +1,9 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:home, :show_analysis]
+  skip_before_action :authenticate_user!, only: [:home, :show_analysis, :submit_feedback, :games_index]
 
   def home
     # Fetch the latest 3 completed analyses for the homepage display
     @latest_analyses = Analysis.joins(:game)
-                              .where(status: 'completed')
                               .order(created_at: :desc)
                               .limit(3)
                               .includes(:game)
@@ -63,8 +62,6 @@ class PagesController < ApplicationController
       
       # Process the game data
       begin
-        @analysis.mark_as_processing!
-        
         # Tags analysis
         @analysis.tags_list = extract_tags(@game)
         
@@ -78,18 +75,31 @@ class PagesController < ApplicationController
           @analysis.image_validation = image_suggester.validate_capsule_image(@game.capsule_image_url)
         end
 
-        @analysis.mark_as_completed!
+        @analysis.save!
         redirect_to show_analysis_path(game_slug: @game.slug), notice: "Analysis completed successfully!"
       rescue StandardError => e
         Rails.logger.error "Analysis failed: #{e.message}"
-        @analysis.mark_as_failed!
         @error_message = "Analysis failed. Please try again."
       end
     end
   end
 
+  def games_index
+    @analyses = Analysis.joins(:game)
+                       .order(created_at: :desc)
+                       .includes(:game)
+                       .page(params[:page])
+                       .per(12) # Show 12 games per page
+  end
+
   def show_analysis
-    @game = Game.find_by!(slug: params[:game_slug])
+    @game = Game.find_by(slug: params[:game_slug])
+    
+    if @game.nil?
+      redirect_to root_path, alert: "Game not found. Please check the URL and try again."
+      return
+    end
+    
     Rails.logger.debug "Found game: #{@game.inspect}"
     
     # If an analysis ID is provided, use that specific analysis
@@ -104,6 +114,37 @@ class PagesController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: { status: @analysis.status } }
+    end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to root_path, alert: "Analysis not found. Please check the URL and try again."
+  end
+
+  def submit_feedback
+    @analysis = Analysis.find(params[:analysis_id])
+    Rails.logger.debug "Found analysis: #{@analysis.inspect}"
+    Rails.logger.debug "Feedback params: #{params.inspect}"
+    
+    # Update the feedback fields
+    update_params = {}
+    update_params["user_rating_#{params[:section]}"] = params[:rating] if params[:rating].present?
+    update_params["user_feedback_#{params[:section]}"] = params[:feedback] if params[:feedback].present?
+
+    if @analysis.update(update_params)
+      respond_to do |format|
+        format.html { redirect_to show_analysis_path(game_slug: @analysis.game.slug), notice: "Thank you for your feedback!" }
+        format.json { render json: { status: 'success' } }
+      end
+    else
+      Rails.logger.error "Failed to update analysis: #{@analysis.errors.full_messages.join(', ')}"
+      respond_to do |format|
+        format.html { redirect_to show_analysis_path(game_slug: @analysis.game.slug), alert: "Could not save feedback: #{@analysis.errors.full_messages.join(', ')}" }
+        format.json { render json: { status: 'error', message: @analysis.errors.full_messages.join(', ') }, status: :unprocessable_entity }
+      end
+    end
+  rescue ActiveRecord::RecordNotFound
+    respond_to do |format|
+      format.html { redirect_to root_path, alert: "Analysis not found" }
+      format.json { render json: { status: 'error', message: 'Analysis not found' }, status: :not_found }
     end
   end
 
