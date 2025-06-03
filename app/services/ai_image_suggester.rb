@@ -73,13 +73,12 @@ class AiImageSuggester
     prompt = <<~PROMPT
       You are a Steam store page quality assurance specialist. Validate this game's capsule image.
     
-      Provide exactly 3 short bullet points:
-      1. A technical check of the capsule image (resolution, format, size)
-      2. A visual check of the capsule image (quality, composition, readability)
-      3. A required action, only if needed, to improve the image
+      Provide exactly 2 short bullet points:
+      1. A visual check of the capsule image (quality, composition, readability)
+      2. A required action, only if needed, to improve the image
     
-      IMPORTANT: Do not include labels like "Technical Check", "Visual Check", or "Required Action".
-      Just write the 3 insights as plain bullet points, each starting with "- ".
+      IMPORTANT: Do not include labels like "Visual Check" or "Required Action".
+      Just write the 2 insights as plain bullet points, each starting with "- ".
       Do not use markdown, bold text, emojis, or checkmarks.
       Keep each bullet point concise, no more than 2 lines.
     PROMPT
