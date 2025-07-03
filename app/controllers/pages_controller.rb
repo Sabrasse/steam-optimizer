@@ -1,5 +1,5 @@
 class PagesController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:home, :show_analysis, :submit_feedback, :games_index]
+  skip_before_action :authenticate_user!, only: [:home, :show_analysis, :submit_feedback, :games_index, :contact]
 
   def home
     # Fetch the latest 3 completed analyses for the homepage display
@@ -90,6 +90,10 @@ class PagesController < ApplicationController
                        .includes(:game)
                        .page(params[:page])
                        .per(12) # Show 12 games per page
+  end
+
+  def contact
+    # Contact page action - no additional logic needed for now
   end
 
   def show_analysis

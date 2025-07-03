@@ -19,6 +19,10 @@ Rails.application.routes.draw do
   # Games routes
   get 'games', to: 'pages#games_index', as: :games_index
 
+  # Contact route
+  get 'contact', to: 'pages#contact', as: :contact
+  post 'contact_submissions', to: 'contact_submissions#create', as: :contact_submissions
+
   # Analysis routes
   get ':game_slug', to: 'pages#show_analysis', as: :show_analysis
   get ':game_slug/:id', to: 'pages#show_analysis', as: :show_analysis_version

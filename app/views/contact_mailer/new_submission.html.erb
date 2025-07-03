@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>New Steam Page Review Request</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #2c3e50;">New Steam Page Review Request</h2>
+    
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+      <h3 style="margin-top: 0; color: #495057;">Game Details</h3>
+      <p><strong>Game Name:</strong> <%= @game_name %></p>
+      <p><strong>Analysis URL:</strong> <a href="<%= @analysis_url %>"><%= @analysis_url %></a></p>
+    </div>
+    
+    <div style="background-color: #e9ecef; padding: 20px; border-radius: 5px; margin: 20px 0;">
+      <h3 style="margin-top: 0; color: #495057;">Contact Information</h3>
+      <p><strong>Email:</strong> <%= @email %></p>
+      <p><strong>Message:</strong></p>
+      <div style="background-color: white; padding: 15px; border-radius: 3px; border-left: 4px solid #007bff;">
+        <%= @message %>
+      </div>
+    </div>
+    
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
+      <p style="color: #6c757d; font-size: 14px;">
+        This request was submitted from the Steam Optimizer analysis page.
+      </p>
+    </div>
+  </div>
+</body>
+</html> 
