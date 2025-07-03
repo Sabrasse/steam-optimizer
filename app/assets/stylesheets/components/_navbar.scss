@@ -4,4 +4,32 @@
   a {
     color: $light;
   }
+
+  .nav-link {
+    color: $light;
+    transition: all 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 20px;
+    margin-right: 1.5rem;
+
+    &:hover {
+      color: $dark;
+      transform: translateY(-2px);
+      background-color: darken($tertiary, 10%);
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .navbar-brand {
+    color: $light;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: $light;
+      transform: translateY(-2px);
+    }
+  }
 }

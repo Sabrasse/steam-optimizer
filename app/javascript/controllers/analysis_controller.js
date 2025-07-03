@@ -14,6 +14,11 @@ export default class extends Controller {
   
   next() {
     if (this.currentSectionIndex < this.sectionTargets.length - 1) {
+      // Show contact modal when going from step 2 to step 3 (index 1 to 2)
+      if (this.currentSectionIndex === 1) {
+        this.showContactModal()
+      }
+      
       this.currentSectionIndex++
       this.updateNavigation()
     }
@@ -24,6 +29,20 @@ export default class extends Controller {
       this.currentSectionIndex--
       this.updateNavigation()
     }
+  }
+  
+  showContactModal() {
+    // Check if modal has already been shown in this session
+    if (sessionStorage.getItem('contactModalShown')) {
+      return
+    }
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('contactModal'))
+    modal.show()
+    
+    // Mark as shown for this session
+    sessionStorage.setItem('contactModalShown', 'true')
   }
   
   updateNavigation() {
