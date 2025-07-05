@@ -19,8 +19,10 @@
         </p>
         
         <%= form_with url: contact_submissions_path, method: :post, local: true, class: "contact-form" do |f| %>
-          <%= f.hidden_field :game_name, value: @game.name %>
-          <%= f.hidden_field :game_slug, value: @game.slug %>
+          <% if @game.present? %>
+            <%= f.hidden_field :game_name, value: @game.name %>
+            <%= f.hidden_field :game_slug, value: @game.slug %>
+          <% end %>
           
           <div class="mb-3">
             <label for="contact_email" class="form-label">Email</label>
@@ -30,6 +32,7 @@
                 required: true %>
           </div>
           
+          <% if @game.present? %>
           <div class="mb-3">
             <label for="contact_game_name" class="form-label">Game Title</label>
             <%= f.text_field :game_name_display, 
@@ -37,6 +40,7 @@
                 value: @game.name,
                 readonly: true %>
           </div>
+          <% end %>
           
           <div class="mb-3">
             <label for="contact_message" class="form-label">Message</label>
@@ -48,7 +52,7 @@
           </div>
           
           <div class="d-grid">
-            <%= f.submit "Send Message", class: "btn btn-primary" %>
+            <%= f.submit "Request Review", class: "btn btn-primary" %>
           </div>
         <% end %>
       </div>
