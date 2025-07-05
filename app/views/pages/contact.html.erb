@@ -9,43 +9,44 @@
       <header class="text-center mb-5">
         <h1 class="mb-4">Contact Us</h1>
         <p class="text-muted">
-          Have questions about Steam store optimization? We'd love to hear from you!
+          Have feedback or want a free review of your Steam Page? We'd love to hear from you!
         </p>
       </header>
 
       <div class="row">
-        <div class="col-md-6 mb-4">
+        <div class="col-12 mb-4">
           <div class="card h-100">
             <div class="card-body">
               <h3 class="card-title h5 mb-3">
                 <i class="fas fa-envelope me-2"></i>
                 Get in Touch
               </h3>
-              <p class="card-text text-muted">
-                Send us an email at keyvan.games@pm.me and we'll get back to you as soon as possible.
+              <p class="card-text text-muted mb-4">
+                Send us an email and we'll get back to you as soon as possible.
               </p>
-              <a href="mailto:keyvan.games@pm.me" class="btn btn-primary">
-                <i class="fas fa-paper-plane me-2"></i>
-                Send Email
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-          <div class="card h-100">
-            <div class="card-body">
-              <h3 class="card-title h5 mb-3">
-                <i class="fas fa-comments me-2"></i>
-                Community
-              </h3>
-              <p class="card-text text-muted">
-                Join our community discussions and get help from other developers.
-              </p>
-              <a href="https://discord.gg/polishmygame" class="btn btn-secondary" target="_blank">
-                <i class="fab fa-discord me-2"></i>
-                Join Discord
-              </a>
+              
+              <%= form_with url: contact_submissions_path, method: :post, local: true, class: "contact-form" do |f| %>
+                <div class="mb-3">
+                  <label for="contact_email" class="form-label">Your Email</label>
+                  <%= f.email_field :email, 
+                      class: "form-control bg-dark text-light border-secondary", 
+                      placeholder: "your.email@example.com",
+                      required: true %>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="contact_message" class="form-label">Message</label>
+                  <%= f.text_area :message, 
+                      class: "form-control bg-dark text-light border-secondary", 
+                      value: "I want a free review of my Steam Page",
+                      rows: 3,
+                      required: true %>
+                </div>
+                
+                <div class="d-grid">
+                  <%= f.submit "Send Message", class: "btn btn-primary" %>
+                </div>
+              <% end %>
             </div>
           </div>
         </div>

@@ -49,18 +49,18 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
     <header class="banner">
-    <h1 class="text-center mb-4">Polish My Game</h1>
-    <p class="text-center text-muted mb-4">
-      🚀 Boost visibility and increase your chances of being wishlisted — or bought.
-    </p>
+    <h1 class="text-center mb-5">Polished Steam page, more wishlists.</h1>
     <p class="text-center mb-4">
-      Enter your game's Steam App ID or URL to get started :
+      🚀 Get an AI-powered audit of your Steam page — capsule, tags, short description & more. 
+    </p>
+    <p class="text-center mb-5">
+      ✨ Not enough? <%= link_to "Ask for a free custom review from an expert", contact_path, class: "text-white" %>.
     </p>
 
     <section class="form mb-4" aria-label="Steam Game Analysis Form">
       <%= form_with url: root_path, method: :post, data: { turbo: false, controller: "form", action: "submit->form#submit" } do |f| %>
         <div class="mb-3">
-          <%= f.label :app_id, "Steam App ID or URL", class: "form-label" %>
+          <%= f.label :app_id, "Enter your game's Steam App ID or URL:", class: "form-label text-muted " %>
           <%= f.text_field :app_id, class: "form-control #{'is-invalid' if @error_message}", 
               placeholder: "e.g. 480 or https://store.steampowered.com/app/480/Portal_2",
               data: { form_target: "input", action: "input->form#inputChanged" } %>
@@ -68,9 +68,6 @@
             <%= @error_message if @error_message %>
           </div>
         </div>
-        <p class="text-left text-muted small mt-4">
-          This tool is not affiliated with Valve Corporation or Steam in any way.
-        </p>
         <div class="text-center">
           <%= f.submit "Analyze Page", class: "btn btn-primary", data: { form_target: "submitButton" } %>
           <span data-form-target="spinner" style="display:none; margin-left:10px;">
@@ -84,7 +81,7 @@
       <!-- Latest Games Optimized Section -->
       <% if @latest_analyses&.any? %>
         <section class="mb-4" aria-labelledby="latest-games-heading">
-          <h2 id="latest-games-heading" class="text-center mb-4 text-light">Latest Games Optimized</h2>
+          <h2 id="latest-games-heading" class="text-center mb-4 text-light">Latest Games Analyzed</h2>
           <div class="row">
             <% @latest_analyses.each do |analysis| %>
               <article class="col-md-4 mb-3">
