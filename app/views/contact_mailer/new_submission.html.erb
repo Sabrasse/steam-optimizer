@@ -2,17 +2,21 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>New Steam Page Review Request</title>
+  <title>New Contact Form Submission</title>
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
   <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-    <h2 style="color: #2c3e50;">New Steam Page Review Request</h2>
+    <h2 style="color: #2c3e50;">New Contact Form Submission</h2>
     
+    <% if @game_name.present? %>
     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
       <h3 style="margin-top: 0; color: #495057;">Game Details</h3>
       <p><strong>Game Name:</strong> <%= @game_name %></p>
+      <% if @analysis_url.present? %>
       <p><strong>Analysis URL:</strong> <a href="<%= @analysis_url %>"><%= @analysis_url %></a></p>
+      <% end %>
     </div>
+    <% end %>
     
     <div style="background-color: #e9ecef; padding: 20px; border-radius: 5px; margin: 20px 0;">
       <h3 style="margin-top: 0; color: #495057;">Contact Information</h3>
@@ -25,7 +29,7 @@
     
     <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
       <p style="color: #6c757d; font-size: 14px;">
-        This request was submitted from the Steam Optimizer analysis page.
+        This request was submitted from the Steam Optimizer website.
       </p>
     </div>
   </div>

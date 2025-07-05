@@ -25,8 +25,13 @@ class ContactSubmissionsController < ApplicationController
     
     respond_to do |format|
       format.html { 
-        redirect_to show_analysis_path(game_slug: params[:game_slug]), 
-        notice: "Thank you! We'll get back to you soon." 
+        if params[:game_slug].present?
+          redirect_to show_analysis_path(game_slug: params[:game_slug]), 
+          notice: "Thank you! We'll get back to you soon." 
+        else
+          redirect_to contact_path, 
+          notice: "Thank you! We'll get back to you soon." 
+        end
       }
       format.json { render json: { status: 'success', message: 'Thank you! We\'ll get back to you soon.' } }
     end
@@ -35,8 +40,13 @@ class ContactSubmissionsController < ApplicationController
     Rails.logger.error e.backtrace.join("\n")
     respond_to do |format|
       format.html { 
-        redirect_to show_analysis_path(game_slug: params[:game_slug]), 
-        alert: "There was an error sending your message. Please try again." 
+        if params[:game_slug].present?
+          redirect_to show_analysis_path(game_slug: params[:game_slug]), 
+          alert: "There was an error sending your message. Please try again." 
+        else
+          redirect_to contact_path, 
+          alert: "There was an error sending your message. Please try again." 
+        end
       }
       format.json { render json: { status: 'error', message: 'There was an error. Please try again.' }, status: :unprocessable_entity }
     end
