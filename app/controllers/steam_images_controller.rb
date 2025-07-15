@@ -6,7 +6,6 @@ class SteamImagesController < ApplicationController
     if @image_url.present?
       suggester = AiImageSuggester.new
       @suggestions = suggester.suggest_capsule_image_improvements(@image_url)
-      @validation = suggester.validate_capsule_image(@image_url)
     end
 
     respond_to do |format|

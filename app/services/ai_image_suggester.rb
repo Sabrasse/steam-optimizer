@@ -6,33 +6,15 @@ class AiImageSuggester
     @client = OpenAI::Client.new
   end
 
-  # Analyzes a Steam capsule image and provides suggestions for improvement
-  def suggest_capsule_image_improvements(image_url)
+  def suggest_capsule_image_improvements(image_url, game_name = nil, genre = nil)
     Rails.logger.debug "Attempting to analyze capsule image: #{image_url.present?}"
-    return nil if image_url.nil? || image_url.strip.empty?
+    return nil if image_url.blank?
 
-    prompt = <<~PROMPT
-    You are a professional Steam store page designer and marketing expert.
-  
-    Analyze the attached image, which is the capsule for a Steam game. Your goal is to identify the most impactful visual improvements that would increase click-through rate (CTR), clarity, and appeal at a glance.
-    
-    
-    Provide exactly 3 short bullet points. Each should include:
-    - A specific issue or missed opportunity visible in the capsule
-    - A brief suggestion for improvement (max 1 sentence)
-    - The name of a successful Steam game that executes this aspect well (for comparison)
-  
-    Rules:
-    - Each bullet point must be no more than 3 lines total.
-    - Do not use markdown, emoji, or special characters.
-    - Prioritize high-ROI visual changes (e.g. font clarity, focal point, contrast, readability, genre signaling).
-  
-    Focus on what a user would notice in a split second when scrolling the Steam store.
-  PROMPT
-  
+    prompt = build_capsule_prompt(game_name, genre)
 
     begin
-      Rails.logger.debug "Sending request to OpenAI API for image analysis"
+      Rails.logger.debug "Sending request to OpenAI API for capsule image analysis"
+
       response = @client.chat(
         parameters: {
           model: MODEL,
@@ -41,80 +23,71 @@ class AiImageSuggester
               role: "user",
               content: [
                 { type: "text", text: prompt.strip },
-                { 
-                  type: "image_url",
-                  image_url: {
-                    url: image_url
-                  }
-                }
+                { type: "image_url", image_url: { url: image_url } }
               ]
             }
           ],
-          max_tokens: 300
+          max_tokens: 700
         }
       )
-      Rails.logger.debug "Raw API Response for image analysis: #{response.inspect}"
+
+      Rails.logger.debug "Raw API Response: #{response.inspect}"
 
       suggestions = response.dig("choices", 0, "message", "content")
-      Rails.logger.debug "Extracted suggestions: #{suggestions.inspect}"
+      if suggestions.blank? || !suggestions.include?("4. Hook / Genre Visibility")
+        Rails.logger.warn("⚠️ Capsule image response missing Section 4 or empty")
+      end
+
       suggestions&.strip
-    rescue StandardError => e
+    rescue => e
       Rails.logger.error "OpenAI API Error in suggest_capsule_image_improvements: #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
       nil
     end
   end
 
-  # Validates if an image meets Steam's capsule image requirements
-  def validate_capsule_image(image_url)
-    Rails.logger.debug "Validating capsule image: #{image_url.present?}"
-    return nil if image_url.nil? || image_url.strip.empty?
+  private
 
-    prompt = <<~PROMPT
-      You are a Steam store page quality assurance specialist. Validate this game's capsule image.
-    
-      Provide exactly 2 short bullet points:
-      1. A visual check of the capsule image (quality, composition, readability)
-      2. A required action, only if needed, to improve the image
-    
-      IMPORTANT: Do not include labels like "Visual Check" or "Required Action".
-      Just write the 2 insights as plain bullet points, each starting with "- ".
-      Do not use markdown, bold text, emojis, or checkmarks.
-      Keep each bullet point concise, no more than 2 lines.
+  def build_capsule_prompt(game_name, genre)
+    <<~PROMPT
+      You are a Steam marketing expert. Your job is to evaluate a game's capsule image to help an indie dev increase discoverability and conversions. Be clear, constructive, and specific — speak like you're advising a solo dev preparing for release.
+
+      ❌ Do NOT comment on file size, resolution, or technical specs unless the image is visibly broken.  
+      ✅ Focus on layout, readability, focal clarity, and whether the image communicates *genre* and *hook* effectively at small sizes (especially 120×45px).
+
+      Use this structure exactly:
+
+      ===
+      **Capsule Image Evaluation#{game_name ? " for \"#{game_name}\"" : ""}**
+
+      1. Art Quality (✔️ / ⚠️ / ❌)  
+      - Is the art polished, consistent with the in-game style, and visually appealing?  
+      - [Brief but specific critique]  
+      - Tip (if ⚠️ or ❌): [Short, actionable improvement]
+
+      2. Readability (✔️ / ⚠️ / ❌)  
+      - Can the title be clearly read at small sizes? Are contrast, font, and subtitle/tagline effective?  
+      - [Name any readability blockers directly — font, overlay, background clutter, etc.]  
+      - Tip (if ⚠️ or ❌): [Concrete readability fix]
+
+      3. Focus / Visual Hierarchy (✔️ / ⚠️ / ❌)  
+      - Is attention clearly guided to the key elements (title, character, mechanic)?  
+      - [Identify competing elements if present — e.g., “rock and character overlap title”]  
+      - Tip (if ⚠️ or ❌): [Improvement to structure, spacing, or anchoring]
+
+      4. Hook / Genre Visibility (✔️ / ⚠️ / ❌)  
+      - Does the image suggest the game's genre, tone, or core mechanic *at a glance*?  
+      - [This section is mandatory — if unclear, explain why AND what’s missing (e.g. no action, no genre-defining iconography). Suggest how it could visually hint at gameplay.]  
+      - Tip (if ⚠️ or ❌): [What visual cue could clarify it?]
+
+      ===
+      **Overall Summary**  
+      Summarize biggest strength(s) and the most important improvement to make.
+
+      **Comparative Insight**  
+      Mention at least one game in the same genre (e.g. *Teslagrad*, *FEZ*) that uses capsule space effectively. If no perfect match, suggest a visually similar reference and why it works.
+
+      Now evaluate the capsule image#{game_name ? " for \"#{game_name}\"" : ""}.#{genre ? " It belongs to the #{genre} genre — keep that in mind." : ""}
     PROMPT
-  
-
-    begin
-      Rails.logger.debug "Sending request to OpenAI API for image validation"
-      response = @client.chat(
-        parameters: {
-          model: MODEL,
-          messages: [
-            {
-              role: "user",
-              content: [
-                { type: "text", text: prompt.strip },
-                { 
-                  type: "image_url",
-                  image_url: {
-                    url: image_url
-                  }
-                }
-              ]
-            }
-          ],
-          max_tokens: 200
-        }
-      )
-      Rails.logger.debug "Raw API Response for image validation: #{response.inspect}"
-
-      validation = response.dig("choices", 0, "message", "content")
-      Rails.logger.debug "Extracted validation: #{validation.inspect}"
-      validation&.strip
-    rescue StandardError => e
-      Rails.logger.error "OpenAI API Error in validate_capsule_image: #{e.message}"
-      Rails.logger.error e.backtrace.join("\n")
-      nil
-    end
   end
-end 
+end

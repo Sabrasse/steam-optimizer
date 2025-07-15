@@ -54,28 +54,6 @@
             <% end %>
           </div>
 
-          <%# Image validation analysis %>
-          <div class="content-block">
-            <h6>Image Validation</h6>
-            <% if @analysis.image_validation.present? %>
-              <div class="content-with-copy">
-                <div class="content">
-                  <ul>
-                    <% @analysis.image_validation.split("\n").each do |validation| %>
-                      <% if validation.strip.present? %>
-                        <li><%= validation.strip %></li>
-                      <% end %>
-                    <% end %>
-                  </ul>
-                </div>
-              </div>
-            <% else %>
-              <p>
-                <i class="fas fa-exclamation-circle"></i> No validation available
-              </p>
-            <% end %>
-          </div>
-
           <%= render "shared/feedback", section: "image" %>
         </div>
       </div>

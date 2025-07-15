@@ -52,7 +52,7 @@ class PagesController < ApplicationController
       end
 
       # Check if game already has an analysis
-      if @game.analyses.latest.present?
+      if @game.analyses.exists?
         redirect_to show_analysis_path(game_slug: @game.slug), notice: "Analysis already exists."
         return
       end
@@ -72,7 +72,6 @@ class PagesController < ApplicationController
         if @game.capsule_image_url.present?
           image_suggester = AiImageSuggester.new
           @analysis.image_suggestions = image_suggester.suggest_capsule_image_improvements(@game.capsule_image_url)
-          @analysis.image_validation = image_suggester.validate_capsule_image(@game.capsule_image_url)
         end
 
         @analysis.save!
